@@ -1,0 +1,5 @@
+__pycache__/
+sim_build/
+runs/
+*.vvp
+*.fst

@@ -1,0 +1,12 @@
+[submodule "ip/panamax"]
+	path = ip/panamax
+	url = ../panamax.git
+[submodule "ip/sky130_ef_ip__simple_por"]
+	path = ip/sky130_ef_ip__simple_por
+	url = ../sky130_ef_ip__simple_por.git
+[submodule "ip/sky130_ef_ip__adc3v_12bit"]
+	path = ip/sky130_ef_ip__adc3v_12bit
+	url = ../sky130_ef_ip__adc3v_12bit.git
+[submodule "ip/sky130_ef_ip__rdac3v_8bit"]
+	path = ip/sky130_ef_ip__rdac3v_8bit
+	url = ../sky130_ef_ip__rdac3v_8bit.git
