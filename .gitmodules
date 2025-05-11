@@ -1,6 +1,3 @@
-[submodule "ip/panamax"]
-	path = ip/panamax
-	url = ../panamax.git
 [submodule "ip/fabulous_fabric"]
 	path = ip/fabulous_fabric
 	url = ../fabulous_fabric.git
@@ -13,3 +10,6 @@
 [submodule "ip/sky130_ef_ip__adc3v_12bit"]
 	path = ip/sky130_ef_ip__adc3v_12bit
 	url = ../../fossi-foundation/sky130_ef_ip__adc3v_12bit.git
+[submodule "ip/panamax"]
+	path = ip/panamax
+	url = ../../fossi-foundation/panamax.git
