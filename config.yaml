@@ -4,20 +4,32 @@ meta:
   substituting_steps:
     Checker.YosysSynthChecks: null
     
+    Checker.NetlistAssignStatements: null
+    
     #Magic.WriteLEF: null
     
     Checker.DisconnectedPins: null # TODO remove
+    
+    #OpenROAD.RepairAntennas: null # TODO remove
+    
+    OpenROAD.IRDropReport: null #TODO
+    
+    Magic.StreamOut: null #TODO
 
 DESIGN_NAME: panamax_fpga_top
 VERILOG_FILES:
 - dir::src/panamax_fpga_top.v
 - dir::src/panamax_fpga_core.sv
-- dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/rtl/fabric_wrapper.sv
-- dir::../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_config.sv
-- dir::../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_spi_receiver.sv
-- dir::../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_spi_controller.sv
+- dir::ip/fabulous_fabric/fabric_sky130/rtl/fabric_wrapper.sv
+- dir::ip/fabulous_fabric/rtl/fabric_config.sv
+- dir::ip/fabulous_fabric/rtl/fabric_spi_receiver.sv
+- dir::ip/fabulous_fabric/rtl/fabric_spi_controller.sv
 
 DEDUPLICATE_CORNERS: true
+
+# TODO
+SYNTH_DIRECT_WIRE_BUFFERING: False
+SYNTH_WRITE_NOATTR: False
 
 # Clock
 CLOCK_NET: xclk
@@ -26,15 +38,15 @@ CLOCK_PERIOD: 20 # TODO
 
 # CTS
 CTS_OBSTRUCTION_AWARE: true
-CTS_CLK_MAX_WIRE_LENGTH: 1000
-CTS_SINK_CLUSTERING_SIZE: 30
-CTS_SINK_CLUSTERING_MAX_DIAMETER: 150
+#CTS_CLK_MAX_WIRE_LENGTH: 1000
+#CTS_SINK_CLUSTERING_SIZE: 30
+#CTS_SINK_CLUSTERING_MAX_DIAMETER: 150
 
 # Routing
 GRT_ALLOW_CONGESTION: true
-RT_CLOCK_MAX_LAYER: met4
-RT_MAX_LAYER: met4
-DRT_MAX_LAYER: met4
+#RT_CLOCK_MAX_LAYER: met4
+#RT_MAX_LAYER: met4
+#DRT_MAX_LAYER: met4
 
 # TODO ignores don't touch directive
 PL_TIME_DRIVEN: False
@@ -43,6 +55,9 @@ PL_TIME_DRIVEN: False
 RSZ_DONT_TOUCH_RX: porb_h|_enable_h
 DESIGN_REPAIR_BUFFER_INPUT_PORTS: false
 DESIGN_REPAIR_BUFFER_OUTPUT_PORTS: false
+
+# Overfix hold violations
+PL_RESIZER_HOLD_SLACK_MARGIN: 0.5
 
 VDD_NETS:
 - VPWR
@@ -59,8 +74,8 @@ FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
 FP_PDN_CORE_RING_HWIDTH: 8
 
-FP_PDN_CORE_RING_VOFFSET: 0
-FP_PDN_CORE_RING_HOFFSET: 0
+FP_PDN_CORE_RING_VOFFSET: 2
+FP_PDN_CORE_RING_HOFFSET: 2
 
 # Floorplanning
 FP_SIZING: absolute
@@ -69,13 +84,20 @@ CORE_AREA: [  20.00,   20.00, 3150.300, 4750.650 ]
 
 FP_DEF_TEMPLATE: dir::ip/panamax/gds/panamax_core_pins.def
 FP_TEMPLATE_MATCH_MODE: permissive
+FP_TEMPLATE_COPY_POWER_PINS: True
 
-PL_TARGET_DENSITY_PCT: 5
+PL_TARGET_DENSITY_PCT: 20 # TODO
 
 FP_OBSTRUCTIONS:
 - [2651.15, 0.00, 3170.30, 55.215]
 
-#PDN_OBSTRUCTIONS
+PDN_OBSTRUCTIONS:
+- [met1, 2661.15, 0.00, 3141.15, 45.215]
+- [met2, 2661.15, 0.00, 3141.15, 45.215]
+- [met3, 2661.15, 0.00, 3141.15, 45.215]
+- [met4, 2661.15, 0.00, 3141.15, 45.215]
+- [met5, 2661.15, 0.00, 3141.15, 45.215]
+
 ROUTING_OBSTRUCTIONS:
 - [met1, 2661.15, 0.00, 3141.15, 45.215]
 - [met2, 2661.15, 0.00, 3141.15, 45.215]
@@ -83,27 +105,32 @@ ROUTING_OBSTRUCTIONS:
 - [met4, 2661.15, 0.00, 3141.15, 45.215]
 - [met5, 2661.15, 0.00, 3141.15, 45.215]
 
+# Magic: Use LEF/DEF to prevent error on the SRAMs
+MAGIC_DRC_USE_GDS: False
+
 MACROS:
 
   eFPGA:
     gds:
-      - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/gds/eFPGA.gds
+      - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/gds/eFPGA.gds
     lef:
-      - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/lef/eFPGA.lef
+      - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/lef/eFPGA.lef
     nl:
-      - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/nl/eFPGA.nl.v
+      - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/nl/eFPGA.nl.v
     pnl:
-      - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/pnl/eFPGA.pnl.v
+      - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/pnl/eFPGA.pnl.v
     spef:
       "min_*":
-        - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/min/eFPGA.min.spef
+        - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/min/eFPGA.min.spef
       "nom_*":
-        - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/nom/eFPGA.nom.spef
+        - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/nom/eFPGA.nom.spef
       "max_*":
-        - dir::../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/max/eFPGA.max.spef
+        - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/spef/max/eFPGA.max.spef
     instances: 
       panamax_fpga_core.fabric_wrapper.eFPGA:
-        location: [250, 950]
+        # Height should be multiple of 0.68 (met3 pitch)
+        # Width should be multiple of 0.46 (met2 pitch)
+        location: [197.8, 349.52]
         orientation: N
 
   sky130_ef_ip__simple_por4x:
@@ -115,8 +142,38 @@ MACROS:
       - dir::ip/sky130_ef_ip__simple_por/verilog/simple_por4x.v
     instances: 
       simple_por4x:
-        location: [200, 200]
+        location: [80, 80]
         orientation: N
+
+  sky130_ef_ip__rdac3v_8bit:
+    gds:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/gds/sky130_ef_ip__rdac3v_8bit.gds.gz
+    lef:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/lef/sky130_ef_ip__rdac3v_8bit.lef
+    instances:
+      dac0:
+        location: [ 1800, 50 ]
+        orientation: S
+      dac1:
+        location: [ 2000, 50 ]
+        orientation: S
+    nl:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/verilog/sky130_ef_ip__rdac3v_8bit.v
+
+  sky130_ef_ip__adc3v_12bit:
+    gds:
+    - dir::ip/sky130_ef_ip__adc3v_12bit/gds/sky130_ef_ip__adc3v_12bit.gds.gz
+    lef:
+    - dir::ip/sky130_ef_ip__adc3v_12bit/lef/sky130_ef_ip__adc3v_12bit.lef
+    instances:
+      adc0:
+        location: [ 800, 30 ]
+        orientation: E
+      adc1:
+        location: [ 1200, 30 ]
+        orientation: E
+    nl:
+    - dir::ip/sky130_ef_ip__adc3v_12bit/verilog/sky130_ef_ip__adc3v_12bit.v
 
   sky130_sram_1kbyte_1rw1r_32x256_8:
     gds:
@@ -130,28 +187,28 @@ MACROS:
     #    - pdk_dir::libs.ref/sky130_sram_macros/lib/sky130_sram_1kbyte_1rw1r_32x256_8_TT_1p8V_25C.lib
     instances: 
       panamax_fpga_core.fabric_wrapper.bram_0:
-        location: [2625, 4200]
+        location: [2625, 4100]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_1:
-        location: [2625, 3750]
+        location: [2625, 3580]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_2:
-        location: [2625, 3300]
+        location: [2625, 3060]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_3:
-        location: [2625, 2850]
+        location: [2625, 2540]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_4:
-        location: [2625, 2400]
+        location: [2625, 2020]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_5:
-        location: [2625, 1950]
-        orientation: N
-      panamax_fpga_core.fabric_wrapper.bram_6:
         location: [2625, 1500]
         orientation: N
+      panamax_fpga_core.fabric_wrapper.bram_6:
+        location: [2625, 980]
+        orientation: N
       panamax_fpga_core.fabric_wrapper.bram_7:
-        location: [2625, 1050]
+        location: [2625, 460]
         orientation: N
 
 PDN_MACRO_CONNECTIONS:

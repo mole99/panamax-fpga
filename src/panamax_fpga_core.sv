@@ -33,6 +33,15 @@ module panamax_fpga_core #(
     // if mode == 1: SPI receiver
     input  logic fpga_mode_i,
     output logic config_busy_o,
+    
+    // ADC
+    input         fabric_adc0_cmp_i,
+    output        fabric_adc0_hold_o,
+    output        fabric_adc0_reset_o,
+    output [11:0] fabric_adc0_value_o,
+
+    // DAC
+    output [7:0]  fabric_dac0_value_o,
 
     // Fabric I/O
     input  [FABRIC_NUM_IO_WEST-1:0] fabric_io_in_i,
@@ -47,7 +56,7 @@ module panamax_fpga_core #(
     	parameter FrameBitsPerRow = 32;
     parameter MaxFramesPerCol = 20;
     
-    parameter NumColumns = 13;
+    parameter NumColumns = 14;
     parameter NumRows = 18;
     
     // Fabric config is currently
@@ -76,14 +85,7 @@ module panamax_fpga_core #(
     wire  [3:0] fabric_warmboot_slot_o;
     wire        fabric_warmboot_reset_i;
     
-    // ADC
-    wire        fabric_adc0_cmp_i;
-    wire        fabric_adc0_hold_o;
-    wire        fabric_adc0_reset_o;
-    wire [11:0] fabric_adc0_value_o;
-
-    // DAC
-    wire [7:0]  fabric_dac0_value_o;
+    assign fabric_warmboot_reset_i = fabric_config_busy;
     
     // SPI receiver
     logic [31:0] spi_receiver_bitstream_data_o;

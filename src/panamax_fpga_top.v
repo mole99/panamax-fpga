@@ -2064,11 +2064,11 @@ module panamax_fpga_top (
 	output wire	muxsplit_sw_switch_bb_sr,
 	output wire	muxsplit_sw_switch_aa_sr
 	
-    `ifdef USE_POWER_PINS
+    //`ifdef USE_POWER_PINS
     ,
     inout VPWR,
     inout VGND
-    `endif
+    //`endif
 );
 
     wire xclk;
@@ -2127,6 +2127,15 @@ module panamax_fpga_top (
     wire fpga_miso_out;
     wire fpga_miso_oe, fpga_miso_oeb;
     assign fpga_miso_oeb = !fpga_miso_oe;
+    
+    // ADC
+    wire        fabric_adc0_cmp_i;
+    wire        fabric_adc0_hold_o;
+    wire        fabric_adc0_reset_o;
+    wire [11:0] fabric_adc0_value_o;
+
+    // DAC
+    wire [7:0]  fabric_dac0_value_o;
 
     panamax_fpga_core #(
         .FABRIC_NUM_IO_WEST (FABRIC_NUM_IO_WEST)
@@ -2162,6 +2171,15 @@ module panamax_fpga_top (
         .fpga_mode_i,
         .config_busy_o,
         
+        // ADC
+        .fabric_adc0_cmp_i      (fabric_adc0_cmp_i),
+        .fabric_adc0_hold_o     (fabric_adc0_hold_o),
+        .fabric_adc0_reset_o    (fabric_adc0_reset_o),
+        .fabric_adc0_value_o    (fabric_adc0_value_o),
+
+        // DAC
+        .fabric_dac0_value_o    (fabric_dac0_value_o),
+        
         // Fabric I/O
         .fabric_io_in_i     (fabric_io_in),
         .fabric_io_out_o    (fabric_io_out),
@@ -2172,6 +2190,89 @@ module panamax_fpga_top (
         .fabric_io_config_bit2_o    (fabric_io_config_bit2),
         .fabric_io_config_bit3_o    (fabric_io_config_bit3)
     );
+    
+    	(* keep *) sky130_ef_ip__rdac3v_8bit /*#(
+	    .FUNCTIONAL (0)
+	)*/ dac0 (
+    /*`ifdef USE_POWER_PINS
+       input       vdd,
+       input       vss,
+       input       dvdd,
+       input       dvss,
+    `endif
+       input  real Vlow,
+       input  real Vhigh,
+       input       ena,
+       input [7:0] b,
+       output real out*/
+       
+       .b   (fabric_dac0_value_o)
+    );
+    
+    (* keep *) sky130_ef_ip__rdac3v_8bit /*#(
+	    .FUNCTIONAL (0)
+	)*/ dac1 (
+    /*`ifdef USE_POWER_PINS
+       input       vdd,
+       input       vss,
+       input       dvdd,
+       input       dvss,
+    `endif
+       input  real Vlow,
+       input  real Vhigh,
+       input       ena,
+       input [7:0] b,
+       output real out*/
+    );
+    
+    (* keep *) sky130_ef_ip__adc3v_12bit /*#(
+	    .FUNCTIONAL (0)
+	)*/ adc0 (
+    /*`ifdef USE_POWER_PINS
+       inout       vccd0,
+       inout       vssd0,
+       inout       vdda0,
+       inout       vssa0,
+    `endif
+       input  real  adc_trim,
+       input  real  adc_vCM,
+       input  real  adc_vrefL,
+       input  real  adc_vrefH,
+       input  real  adc0,
+       input        adc0_ena,
+       input        adc0_reset,
+       input        adc0_hold,
+       input [11:0] adc0_dac_val_0,
+       output       adc0_comp_out*/
+       
+       .adc0_ena        (1'b1), // TODO
+       .adc0_reset      (fabric_adc0_reset_o),
+       .adc0_hold       (fabric_adc0_hold_o),
+       .adc0_dac_val_0  (fabric_adc0_value_o),
+       .adc0_comp_out   (fabric_adc0_cmp_i)
+    );
+    
+    (* keep *) sky130_ef_ip__adc3v_12bit /*#(
+	    .FUNCTIONAL (0)
+	)*/ adc1 (
+    /*`ifdef USE_POWER_PINS
+       inout       vccd0,
+       inout       vssd0,
+       inout       vdda0,
+       inout       vssa0,
+    `endif
+       input  real  adc_trim,
+       input  real  adc_vCM,
+       input  real  adc_vrefL,
+       input  real  adc_vrefH,
+       input  real  adc0,
+       input        adc0_ena,
+       input        adc0_reset,
+       input        adc0_hold,
+       input [11:0] adc0_dac_val_0,
+       output       adc0_comp_out*/
+    );
+    
     
     wire [0:0] unused;
 
