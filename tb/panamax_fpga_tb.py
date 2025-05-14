@@ -15,7 +15,7 @@ from cocotbext.uart import UartSource, UartSink
 
 # TODO add bitstream file
 
-flash1_slot0 = '../../../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex'
+flash1_slot0 = '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex'
 flash1_slot1 = ''
 
 async def start_clock(clock, freq=50):
@@ -81,10 +81,6 @@ def set_vdd(dut, value: bool):
     dut.vssio_7.value = 0
     dut.vssio_8.value = 0
     dut.vssio_9.value = 0
-    
-    # TODO
-    dut.VPWR.value = 1
-    dut.VGND.value = 0
 
 async def start_up(dut):
     """ Startup sequence """
@@ -101,12 +97,12 @@ async def test_hello_world(dut):
     #uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
     #uart_sink = UartSink(dut.uart0_tx, baud=115200, bits=8)
 
-    await start_up(dut)
-    
     # FPGA config mode
     # if mode == 0: SPI controller
     # if mode == 1: SPI receiver
     dut.fpga_mode_i.value = 0
+
+    await start_up(dut)
     
     await ClockCycles(dut.clock_tb, 1000)
     
@@ -137,6 +133,14 @@ if __name__ == "__main__":
         # Panamax
         testbench_path / '../ip/panamax/verilog/rtl/panamax.v',
         testbench_path / '../ip/panamax/verilog/rtl/constant_block.v',
+        testbench_path / '../ip/panamax/verilog/rtl/product_id_rom_8bit.v',
+        testbench_path / '../ip/panamax/verilog/rtl/project_id_rom_32bit.v',
+        testbench_path / '../ip/panamax/verilog/rtl/xres_lvlshift.v',
+        
+        # Analog
+        testbench_path / '../ip/sky130_ef_ip__rdac3v_8bit/verilog/sky130_ef_ip__rdac3v_8bit.v',
+        testbench_path / '../ip/sky130_ef_ip__adc3v_12bit/verilog/sky130_ef_ip__adc3v_12bit.v',
+        testbench_path / '../ip/manual_routing/gl/manual_routing.v',
         
         # Add I/O models
         Path(pdk_root).expanduser() / pdk / "libs.ref" / "sky130_fd_io" / "verilog" / "sky130_fd_io.v",
@@ -169,18 +173,18 @@ if __name__ == "__main__":
         ])
         
         # Add fabric config
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_config.sv')
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_spi_controller.sv')
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/rtl/fabric_spi_receiver.sv')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/rtl/fabric_config.sv')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/rtl/fabric_spi_controller.sv')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/rtl/fabric_spi_receiver.sv')
         
         # Fabric wrapper
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/rtl/fabric_wrapper.sv')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/fabric_sky130/rtl/fabric_wrapper.sv')
         
         # Add FPGA fabric
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/fabric_sky130/macro/sky130A/fabulous/eFPGA.v')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/fabric_sky130/macro/sky130A/fabulous/eFPGA.v')
 
         # Add tiles
-        TILES_ROOT = testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/fabulous_tiles/tiles'
+        TILES_ROOT = testbench_path / '../ip/fabulous_fabric/fabulous_tiles/tiles'
         
         # DSP
         verilog_sources.append(f'{TILES_ROOT}/DSP/DSP.v')
@@ -234,12 +238,12 @@ if __name__ == "__main__":
         verilog_sources.append(f'{TILES_ROOT}/S_term_single2/S_term_single2_ConfigMem.v')
         verilog_sources.append(f'{TILES_ROOT}/S_term_single2/S_term_single2_switch_matrix.v')
 
-        # W_IO
-        verilog_sources.append(f'{TILES_ROOT}/W_IO/W_IO.v')
-        verilog_sources.append(f'{TILES_ROOT}/W_IO/W_IO_ConfigMem.v')
-        verilog_sources.append(f'{TILES_ROOT}/W_IO/W_IO_switch_matrix.v')
-        verilog_sources.append(f'{TILES_ROOT}/W_IO/IO_1_bidirectional_frame_config_pass.v')
-        verilog_sources.append(f'{TILES_ROOT}/W_IO/Config_access.v')
+        # W_IO4
+        verilog_sources.append(f'{TILES_ROOT}/W_IO4/W_IO4.v')
+        verilog_sources.append(f'{TILES_ROOT}/W_IO4/W_IO4_ConfigMem.v')
+        verilog_sources.append(f'{TILES_ROOT}/W_IO4/W_IO4_switch_matrix.v')
+        verilog_sources.append(f'{TILES_ROOT}/W_IO4/IO_1_bidirectional_frame_config_pass.v')
+        verilog_sources.append(f'{TILES_ROOT}/W_IO4/Config_access.v')
         
         # S_EF_ADC12
         verilog_sources.append(f'{TILES_ROOT}/S_EF_ADC12/S_EF_ADC12.v')
@@ -279,7 +283,7 @@ if __name__ == "__main__":
         verilog_sources.append(f'{TILES_ROOT}/S_term_OpenRAM/S_term_OpenRAM_ConfigMem.v')
         verilog_sources.append(f'{TILES_ROOT}/S_term_OpenRAM/S_term_OpenRAM_switch_matrix.v')
 
-        verilog_sources.append(testbench_path / '../../greyhound-ihp-rebase/ip/fabulous_fabric/fabulous_tiles/models_pack.v')
+        verilog_sources.append(testbench_path / '../ip/fabulous_fabric/fabulous_tiles/models_pack.v')
         
         defines = {'RTL': True, 'FUNCTIONAL': True, 'UNIT_DELAY': '#0'}
 

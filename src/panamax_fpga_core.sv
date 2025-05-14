@@ -34,14 +34,25 @@ module panamax_fpga_core #(
     input  logic fpga_mode_i,
     output logic config_busy_o,
     
-    // ADC
+    // ADC 0
     input         fabric_adc0_cmp_i,
     output        fabric_adc0_hold_o,
     output        fabric_adc0_reset_o,
     output [11:0] fabric_adc0_value_o,
 
-    // DAC
+    // ADC 1
+    input         fabric_adc1_cmp_i,
+    output        fabric_adc1_hold_o,
+    output        fabric_adc1_reset_o,
+    output [11:0] fabric_adc1_value_o,
+
+    // DAC 0
     output [7:0]  fabric_dac0_value_o,
+    output        fabric_dac0_enable_o,
+
+    // DAC 1
+    output [7:0]  fabric_dac1_value_o,
+    output        fabric_dac1_enable_o,
 
     // Fabric I/O
     input  [FABRIC_NUM_IO_WEST-1:0] fabric_io_in_i,
@@ -287,14 +298,25 @@ module panamax_fpga_core #(
         .warmboot_slot_o     (fabric_warmboot_slot_o),
         .warmboot_reset_i    (fabric_warmboot_reset_i),
         
-        // ADC
+        // ADC 0
         .adc0_cmp_i     (fabric_adc0_cmp_i),
         .adc0_hold_o    (fabric_adc0_hold_o),
         .adc0_reset_o   (fabric_adc0_reset_o),
         .adc0_value_o   (fabric_adc0_value_o),
 
-        // DAC
-        .dac0_value_o   (fabric_dac0_value_o)
+        // ADC 1
+        .adc1_cmp_i     (fabric_adc1_cmp_i),
+        .adc1_hold_o    (fabric_adc1_hold_o),
+        .adc1_reset_o   (fabric_adc1_reset_o),
+        .adc1_value_o   (fabric_adc1_value_o),
+
+        // DAC 0
+        .dac0_value_o   (fabric_dac0_value_o),
+        .dac0_enable_o   (fabric_dac0_enable_o),
+
+        // DAC 1
+        .dac1_value_o   (fabric_dac1_value_o),
+        .dac1_enable_o   (fabric_dac1_enable_o)
     );
     
     assign fabric_io_west_in_i = fabric_io_in_i;

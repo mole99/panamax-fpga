@@ -1,0 +1,95 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO manual_routing
+  CLASS COVER ;
+  FOREIGN manual_routing ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 1.000 BY 1.000 ;
+  PIN xi0_core
+    PORT
+      LAYER met2 ;
+        RECT 944.945 29.030 948.915 30.020 ;
+        RECT 944.930 15.530 948.930 29.030 ;
+        RECT 944.930 11.530 1074.995 15.530 ;
+        RECT 1070.995 2.000 1074.995 11.530 ;
+        RECT 1068.340 0.000 1077.320 2.000 ;
+      LAYER met3 ;
+        RECT 946.555 30.000 947.315 31.295 ;
+        RECT 944.965 28.070 948.895 30.000 ;
+    END
+  END xi0_core
+  PIN xi1_core
+    PORT
+      LAYER met2 ;
+        RECT 1465.610 15.620 1469.610 56.270 ;
+        RECT 1290.870 11.620 1469.610 15.620 ;
+        RECT 1290.870 2.000 1294.870 11.620 ;
+        RECT 1288.340 0.000 1297.320 2.000 ;
+    END
+  END xi1_core
+  PIN xo0_core
+    PORT
+      LAYER met2 ;
+        RECT 1254.980 29.025 1258.950 30.020 ;
+        RECT 1254.960 15.620 1258.960 29.025 ;
+        RECT 1180.940 11.620 1258.960 15.620 ;
+        RECT 1180.940 2.000 1184.940 11.620 ;
+        RECT 1178.340 0.000 1187.320 2.000 ;
+      LAYER met3 ;
+        RECT 1256.555 30.000 1257.315 31.295 ;
+        RECT 1255.000 28.070 1258.930 30.000 ;
+    END
+  END xo0_core
+  PIN xo1_core
+    PORT
+      LAYER met2 ;
+        RECT 1565.595 8.840 1569.595 56.270 ;
+        RECT 1400.895 4.840 1569.595 8.840 ;
+        RECT 1400.895 2.000 1404.895 4.840 ;
+        RECT 1398.340 0.000 1407.320 2.000 ;
+    END
+  END xo1_core
+  PIN out
+    PORT
+      LAYER met2 ;
+        RECT 1566.980 55.000 1568.255 56.270 ;
+    END
+    PORT
+      LAYER met2 ;
+        RECT 1466.980 55.000 1468.255 56.270 ;
+    END
+  END out
+  PIN adc_in
+    PORT
+      LAYER met3 ;
+        RECT 1256.555 30.000 1257.315 31.265 ;
+    END
+    PORT
+      LAYER met3 ;
+        RECT 946.555 30.000 947.315 31.265 ;
+    END
+  END adc_in
+  PIN vssa3
+    PORT
+      LAYER met3 ;
+        RECT 1665.260 19.900 1680.260 200.915 ;
+        RECT 1665.260 5.000 2365.645 19.900 ;
+        RECT 1665.260 4.900 2365.655 5.000 ;
+        RECT 2291.860 0.000 2315.760 4.900 ;
+        RECT 2341.755 0.000 2365.655 4.900 ;
+    END
+  END vssa3
+  PIN vdda3
+    PORT
+      LAYER met3 ;
+        RECT 1684.205 38.635 1699.205 213.770 ;
+        RECT 1684.205 23.635 2495.660 38.635 ;
+        RECT 2421.860 0.000 2445.760 23.635 ;
+        RECT 2471.755 0.000 2495.655 23.635 ;
+    END
+  END vdda3
+END manual_routing
+END LIBRARY
+

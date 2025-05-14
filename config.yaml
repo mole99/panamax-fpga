@@ -14,7 +14,17 @@ meta:
     
     OpenROAD.IRDropReport: null #TODO
     
-    Magic.StreamOut: null #TODO
+    #Magic.StreamOut: null #TODO
+    
+    Magic.WriteLef: null
+    Odb.CheckDesignAntennaProperties: null
+    
+    # Apply the DEF template before PDN
+    #Odb.ApplyDEFTemplate: null
+    #-OpenROAD.GeneratePDN: Odb.ApplyDEFTemplate
+    
+    KLayout.XOR: null
+    
 
 DESIGN_NAME: panamax_fpga_top
 VERILOG_FILES:
@@ -27,9 +37,23 @@ VERILOG_FILES:
 
 DEDUPLICATE_CORNERS: true
 
-# TODO
+
+# Magic streamout: don't blackbox macros
+MAGIC_MACRO_STD_CELL_SOURCE: PDK
+
+IGNORE_DISCONNECTED_MODULES:
+    - manual_routing
+    - adc0
+    - adc1
+    - dac0
+    - dac1
+
+# Prevent porb_h mangling
 SYNTH_DIRECT_WIRE_BUFFERING: False
 SYNTH_WRITE_NOATTR: False
+
+# Ignores don't touch directive
+PL_TIME_DRIVEN: False
 
 # Clock
 CLOCK_NET: xclk
@@ -47,9 +71,6 @@ GRT_ALLOW_CONGESTION: true
 #RT_CLOCK_MAX_LAYER: met4
 #RT_MAX_LAYER: met4
 #DRT_MAX_LAYER: met4
-
-# TODO ignores don't touch directive
-PL_TIME_DRIVEN: False
 
 # Resizer
 RSZ_DONT_TOUCH_RX: porb_h|_enable_h
@@ -70,6 +91,8 @@ GND_NETS:
 #FP_PDN_VPITCH: 6.4
 #FP_PDN_HPITCH: 6.4
 
+FP_PDN_CFG: dir::pdn_cfg.tcl
+
 FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
 FP_PDN_CORE_RING_HWIDTH: 8
@@ -82,34 +105,43 @@ FP_SIZING: absolute
 DIE_AREA:  [   0.00,   0.00, 3170.300, 4770.650 ]
 CORE_AREA: [  20.00,   20.00, 3150.300, 4750.650 ]
 
-FP_DEF_TEMPLATE: dir::ip/panamax/gds/panamax_core_pins.def
+FP_DEF_TEMPLATE: dir::ip/panamax_core_pins/def/panamax_core_pins.def
 FP_TEMPLATE_MATCH_MODE: permissive
 FP_TEMPLATE_COPY_POWER_PINS: True
 
 PL_TARGET_DENSITY_PCT: 20 # TODO
 
 FP_OBSTRUCTIONS:
+# SIO
 - [2651.15, 0.00, 3170.30, 55.215]
+# ADC/DAC area
+- [800, 0.00, 1700, 270]
 
 PDN_OBSTRUCTIONS:
-- [met1, 2661.15, 0.00, 3141.15, 45.215]
-- [met2, 2661.15, 0.00, 3141.15, 45.215]
-- [met3, 2661.15, 0.00, 3141.15, 45.215]
-- [met4, 2661.15, 0.00, 3141.15, 45.215]
-- [met5, 2661.15, 0.00, 3141.15, 45.215]
+# SIO
+- [met1, 2661.15, 0.00, 3141.15, 46.715]
+- [met2, 2661.15, 0.00, 3141.15, 46.715]
+- [met3, 2661.15, 0.00, 3141.15, 46.715]
+- [met4, 2661.15, 0.00, 3141.15, 46.715]
+- [met5, 2661.15, 0.00, 3141.15, 46.715]
+# ADC/DAC area
+- [met4, 800, 20, 1700, 270]
+- [met5, 800, 20, 1700, 270]
 
 ROUTING_OBSTRUCTIONS:
-- [met1, 2661.15, 0.00, 3141.15, 45.215]
-- [met2, 2661.15, 0.00, 3141.15, 45.215]
-- [met3, 2661.15, 0.00, 3141.15, 45.215]
-- [met4, 2661.15, 0.00, 3141.15, 45.215]
-- [met5, 2661.15, 0.00, 3141.15, 45.215]
+# SIO
+- [met1, 2661.15, 0.00, 3141.15, 46.715]
+- [met2, 2661.15, 0.00, 3141.15, 46.715]
+- [met3, 2661.15, 0.00, 3141.15, 46.715]
+- [met4, 2661.15, 0.00, 3141.15, 46.715]
+- [met5, 2661.15, 0.00, 3141.15, 46.715]
+# ADC/DAC area
+- [met4, 800, 0.00, 1700, 270]
 
 # Magic: Use LEF/DEF to prevent error on the SRAMs
 MAGIC_DRC_USE_GDS: False
 
 MACROS:
-
   eFPGA:
     gds:
       - dir::ip/fabulous_fabric/fabric_sky130/macro/sky130A/gds/eFPGA.gds
@@ -142,23 +174,8 @@ MACROS:
       - dir::ip/sky130_ef_ip__simple_por/verilog/simple_por4x.v
     instances: 
       simple_por4x:
-        location: [80, 80]
+        location: [1618, 100]
         orientation: N
-
-  sky130_ef_ip__rdac3v_8bit:
-    gds:
-    - dir::ip/sky130_ef_ip__rdac3v_8bit/gds/sky130_ef_ip__rdac3v_8bit.gds.gz
-    lef:
-    - dir::ip/sky130_ef_ip__rdac3v_8bit/lef/sky130_ef_ip__rdac3v_8bit.lef
-    instances:
-      dac0:
-        location: [ 1800, 50 ]
-        orientation: S
-      dac1:
-        location: [ 2000, 50 ]
-        orientation: S
-    nl:
-    - dir::ip/sky130_ef_ip__rdac3v_8bit/verilog/sky130_ef_ip__rdac3v_8bit.v
 
   sky130_ef_ip__adc3v_12bit:
     gds:
@@ -168,12 +185,27 @@ MACROS:
     instances:
       adc0:
         location: [ 800, 30 ]
-        orientation: E
+        orientation: W
       adc1:
-        location: [ 1200, 30 ]
-        orientation: E
+        location: [ 1110, 30 ]
+        orientation: W
     nl:
     - dir::ip/sky130_ef_ip__adc3v_12bit/verilog/sky130_ef_ip__adc3v_12bit.v
+
+  sky130_ef_ip__rdac3v_8bit:
+    gds:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/gds/sky130_ef_ip__rdac3v_8bit.gds.gz
+    lef:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/lef/sky130_ef_ip__rdac3v_8bit.lef
+    instances:
+      dac0:
+        location: [ 1418, 55 ]
+        orientation: S
+      dac1:
+        location: [ 1518, 55 ]
+        orientation: S
+    nl:
+    - dir::ip/sky130_ef_ip__rdac3v_8bit/verilog/sky130_ef_ip__rdac3v_8bit.v
 
   sky130_sram_1kbyte_1rw1r_32x256_8:
     gds:
@@ -211,6 +243,19 @@ MACROS:
         location: [2625, 460]
         orientation: N
 
+  manual_routing:
+    gds:
+      - dir::ip/manual_routing/gds/manual_routing.gds.gz
+    lef:
+      - dir::ip/manual_routing/lef/manual_routing.lef
+    instances:
+      manual_routing:
+        location: [0, 0]
+        orientation: N
+    nl:
+      - dir::ip/manual_routing/gl/manual_routing.v
+
+
 PDN_MACRO_CONNECTIONS:
   - "panamax_fpga_core.fabric_wrapper.eFPGA VPWR VGND VPWR VGND"
   - "panamax_fpga_core.fabric_wrapper.bram_0 VPWR VGND vccd1 vssd1"
@@ -223,3 +268,4 @@ PDN_MACRO_CONNECTIONS:
   - "panamax_fpga_core.fabric_wrapper.bram_7 VPWR VGND vccd1 vssd1"
 #  - "simple_por4x VPWR VGND vdd3v3 vss3v3"
 #  - "simple_por4x VPWR VGND vdd1v8 vss1v8"
+

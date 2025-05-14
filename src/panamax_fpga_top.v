@@ -2,22 +2,10 @@
 
 module panamax_fpga_top (
     `ifdef USE_POWER_PINS
-    inout wire vccd0,    // Common 1.8V supply
-    inout wire vccd1,    // User area 1 1.8V supply
-    inout wire vccd2,    // User area 2 1.8v supply
-    inout wire vssd0,    // Common digital ground
-    inout wire vssd1,    // User area 1 digital ground
-    inout wire vssd2,    // User area 2 digital ground
-    inout wire vdda0,    // User area 0 3.3V supply
-    inout wire vdda1,    // User area 1 3.3V supply
-    inout wire vdda2,    // User area 2 3.3V supply
-    inout wire vdda3,    // timing frontend 3.3V supply
-    inout wire vssa0,    // User area 0 analog ground
-    inout wire vssa1,    // User area 1 analog ground
-    inout wire vssa2,    // User area 2 analog ground
-    inout wire vssa3,    // timing frontend analog ground
-    inout wire vddio,
-    inout wire vssio,
+    inout wire DVPWR,    // Digital 1.8V supply
+    inout wire DVGND,    // Digital ground
+    inout wire AVPWR,    // Analog 3.3V supply
+    inout wire AVGND,    // Analog ground
     `endif /* USE_POWER_PINS */
 	
     input wire	[7:0] product_id,
@@ -2063,12 +2051,6 @@ module panamax_fpga_top (
 	output wire	muxsplit_sw_switch_bb_sl,
 	output wire	muxsplit_sw_switch_bb_sr,
 	output wire	muxsplit_sw_switch_aa_sr
-	
-    //`ifdef USE_POWER_PINS
-    ,
-    inout VPWR,
-    inout VGND
-    //`endif
 );
 
     wire xclk;
@@ -2077,22 +2059,20 @@ module panamax_fpga_top (
     assign xrst_n = resetb_xres_n;
     
     (* dont_touch *) wire porb_h;
-    (* dont_touch *) wire [1:0] double_porb_h;
     
     sky130_ef_ip__simple_por4x simple_por4x (
-    /*`ifdef USE_POWER_PINS
-        .vdd3v3 (VPWR), // TODO
-        .vdd1v8 (VPWR),
-        .vss3v3 (VGND), // TODO
-        .vss1v8 (VGND),
-    `endif*/
-        .porb_h (double_porb_h),
+    `ifdef FUNCTIONAL
+    `ifdef USE_POWER_PINS
+        .vdd3v3 (DVPWR),
+        .vdd1v8 (AVPWR),
+        .vss3v3 (DVGND),
+        .vss1v8 (AVGND),
+    `endif
+    `endif
+        .porb_h (porb_h),
         .porb_l (),
         .por_l  ()
     );
-    
-    assign porb_h = double_porb_h[0];
-    assign porb_h = double_porb_h[1];
     
     parameter FABRIC_NUM_IO_WEST = 64;
     
@@ -2128,21 +2108,32 @@ module panamax_fpga_top (
     wire fpga_miso_oe, fpga_miso_oeb;
     assign fpga_miso_oeb = !fpga_miso_oe;
     
-    // ADC
+    // ADC 0
     wire        fabric_adc0_cmp_i;
     wire        fabric_adc0_hold_o;
     wire        fabric_adc0_reset_o;
     wire [11:0] fabric_adc0_value_o;
 
-    // DAC
+    // ADC 1
+    wire        fabric_adc1_cmp_i;
+    wire        fabric_adc1_hold_o;
+    wire        fabric_adc1_reset_o;
+    wire [11:0] fabric_adc1_value_o;
+
+    // DAC 0
     wire [7:0]  fabric_dac0_value_o;
+    wire        fabric_dac0_enable_o;
+
+    // DAC 1
+    wire [7:0]  fabric_dac1_value_o;
+    wire        fabric_dac1_enable_o;
 
     panamax_fpga_core #(
         .FABRIC_NUM_IO_WEST (FABRIC_NUM_IO_WEST)
     ) panamax_fpga_core (
     `ifdef USE_POWER_PINS
-        .VPWR   (VPWR),
-        .VGND   (VGND),
+        .VPWR   (DVPWR),
+        .VGND   (DVGND),
     `endif
     
         .clk_i      (xclk),
@@ -2171,15 +2162,26 @@ module panamax_fpga_top (
         .fpga_mode_i,
         .config_busy_o,
         
-        // ADC
+        // ADC 0
         .fabric_adc0_cmp_i      (fabric_adc0_cmp_i),
         .fabric_adc0_hold_o     (fabric_adc0_hold_o),
         .fabric_adc0_reset_o    (fabric_adc0_reset_o),
         .fabric_adc0_value_o    (fabric_adc0_value_o),
 
-        // DAC
+        // ADC 1
+        .fabric_adc1_cmp_i      (fabric_adc1_cmp_i),
+        .fabric_adc1_hold_o     (fabric_adc1_hold_o),
+        .fabric_adc1_reset_o    (fabric_adc1_reset_o),
+        .fabric_adc1_value_o    (fabric_adc1_value_o),
+
+        // DAC 0
         .fabric_dac0_value_o    (fabric_dac0_value_o),
-        
+        .fabric_dac0_enable_o   (fabric_dac0_enable_o),
+
+        // DAC 1
+        .fabric_dac1_value_o    (fabric_dac1_value_o),
+        .fabric_dac1_enable_o   (fabric_dac1_enable_o),
+
         // Fabric I/O
         .fabric_io_in_i     (fabric_io_in),
         .fabric_io_out_o    (fabric_io_out),
@@ -2206,7 +2208,8 @@ module panamax_fpga_top (
        input [7:0] b,
        output real out*/
        
-       .b   (fabric_dac0_value_o)
+       .b   (fabric_dac0_value_o),
+       .ena (fabric_dac0_enable_o)
     );
     
     (* keep *) sky130_ef_ip__rdac3v_8bit /*#(
@@ -2223,6 +2226,9 @@ module panamax_fpga_top (
        input       ena,
        input [7:0] b,
        output real out*/
+
+       .b   (fabric_dac1_value_o),
+       .ena (fabric_dac1_enable_o)
     );
     
     (* keep *) sky130_ef_ip__adc3v_12bit /*#(
@@ -2245,7 +2251,7 @@ module panamax_fpga_top (
        input [11:0] adc0_dac_val_0,
        output       adc0_comp_out*/
        
-       .adc0_ena        (1'b1), // TODO
+       .adc0_ena        (1'b1),
        .adc0_reset      (fabric_adc0_reset_o),
        .adc0_hold       (fabric_adc0_hold_o),
        .adc0_dac_val_0  (fabric_adc0_value_o),
@@ -2271,6 +2277,12 @@ module panamax_fpga_top (
        input        adc0_hold,
        input [11:0] adc0_dac_val_0,
        output       adc0_comp_out*/
+       
+       .adc0_ena        (1'b1),
+       .adc0_reset      (fabric_adc1_reset_o),
+       .adc0_hold       (fabric_adc1_hold_o),
+       .adc0_dac_val_0  (fabric_adc1_value_o),
+       .adc0_comp_out   (fabric_adc1_cmp_i)
     );
     
     
@@ -2425,6 +2437,8 @@ module panamax_fpga_top (
     assign pwrdet_in2_vddio_hv = 1'b0;
     assign pwrdet_in3_vddio_hv = 1'b0;
     assign pwrdet_rst_por_hv_n = 1'b0;
+    
+    (* keep *) manual_routing manual_routing();
 
 endmodule
 

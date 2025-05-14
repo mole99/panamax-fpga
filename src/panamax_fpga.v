@@ -19,10 +19,6 @@
 module panamax_fpga (
     // All top-level I/O are package-facing pins
     
-    // TODO
-    inout wire VPWR,
-    inout wire VGND,
-    
     // PWR
     inout wire vccd0_0,
     inout wire vccd0_1,
@@ -4409,6 +4405,11 @@ module panamax_fpga (
         .xo1_core(xo1_core)
     );
     panamax_fpga_top panamax_fpga_top (
+        .DVPWR(vccd0_core),
+        .DVGND(vssd0_core),
+        .AVPWR(vdda0_core),
+        .AVGND(vssa0_core),
+    
         .analog_0_core(analog_0_core),
         .analog_1_core(analog_1_core),
         .gpio0_0_analog_en(gpio0_0_analog_en),
@@ -6433,12 +6434,12 @@ module panamax_fpga (
         .sio_vreg_en_refgen(sio_vreg_en_refgen),
         .sio_vtrip_sel(sio_vtrip_sel),
         .sio_vtrip_sel_refgen(sio_vtrip_sel_refgen),
-        .vccd0(vccd0_core),
+        /*.vccd0(vccd0_core),
         .vccd1(vccd1_core),
         .vccd2(vccd2_core),
         .vssd0(vssd0_core),
         .vssd1(vssd1_core),
-        .vssd2(vssd2_core),
+        .vssd2(vssd2_core),*/
         .vref_e_enable_h(vref_e_enable_h),
         .vref_e_hld_h_n(vref_e_hld_h_n),
         .vref_e_ref_sel(vref_e_ref_sel),
@@ -6447,7 +6448,7 @@ module panamax_fpga (
         .vref_w_hld_h_n(vref_w_hld_h_n),
         .vref_w_ref_sel(vref_w_ref_sel),
         .vref_w_vrefgen_en(vref_w_vrefgen_en),
-        .vssa0(vssa0_core),
+        /*.vssa0(vssa0_core),
         .vssa1(vssa1_core),
         .vssa2(vssa2_core),
         .vssa3(vssa3_core),
@@ -6456,7 +6457,7 @@ module panamax_fpga (
         .vdda2(vdda2_core),
         .vdda3(vdda3_core),
         .vssio(vssio_core),
-        .vddio(vddio_core),
+        .vddio(vddio_core),*/
         .xi0_core(xi0_core), // 32k
         .xi1_core(xi1_core), // 16 M
         .xo0_core(xo0_core),
@@ -6464,10 +6465,6 @@ module panamax_fpga (
         .amuxbus_a_n(amuxbus_a_n),
         .amuxbus_b_n(amuxbus_b_n),
         .vref_e_vinref(vref_e_vinref),
-        .vref_w_vinref(vref_w_vinref),
-        
-        // TODO
-        .VPWR(VPWR),
-        .VGND(VGND)
+        .vref_w_vinref(vref_w_vinref)
     );
 endmodule

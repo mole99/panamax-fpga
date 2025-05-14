@@ -26,10 +26,6 @@ module panamax_fpga_tb;
 	    .io3 ()
     );
 
-    // TODO
-    wire VPWR;
-    wire VGND;
-
     // power
     wire vccd0_0;
     wire vccd0_1;
@@ -183,23 +179,19 @@ module panamax_fpga_tb;
     assign sio0 = gpio72;
     assign sio1 = gpio73;
     
-    assign fpga_sclk = gpio0;
-    assign fpga_cs_n = gpio1;
-    assign fpga_mosi = gpio2;
-    assign gpio3 = fpga_miso;
-    
-    wire config_busy_o;
-    assign config_busy_o = gpio5;
+    assign fpga_sclk = gpio65;
+    assign fpga_cs_n = gpio66;
+    assign fpga_mosi = gpio67;
+    assign gpio68 = fpga_miso;
     
     wire fpga_mode_i;
-    assign gpio4 = fpga_mode_i;
+    assign gpio69 = fpga_mode_i;
+    
+    wire config_busy_o;
+    assign config_busy_o = gpio70;
 
     // greyhound instance
     panamax_fpga uut(
-        // TODO
-        .VPWR(VPWR),
-        .VGND(VGND),
-    
         // PWR
         .vccd0_0(vccd0_0),
         .vccd0_1(vccd0_1),
