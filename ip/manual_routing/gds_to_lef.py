@@ -20,6 +20,9 @@ magic_input += f'gds read {gds_in}\n'
 magic_input += f'load {top_module}\n'
 magic_input += f'select top cell\n'# {top_module}\n'
 
+magic_input += f'port DVPWR use power\n'
+magic_input += f'port DVGND use ground\n'
+
 # Set properties that are used by lef write
 magic_input += f'property LEFclass COVER\n'
 magic_input += f'property FIXED_BBOX "0 0 200 200"\n' # box of 1x1

@@ -13,151 +13,7 @@ END VIAS
 COMPONENTS 0 ;
 END COMPONENTS
 
-PINS 2296 ;
-   - pwrdet_vddd_present_vddio_hv + NET pwrdet_vddd_present_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2412375 750 ) N ;
-   - pwrdet_in2_vddio_hv + NET pwrdet_in2_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2413660 750 ) N ;
-   - pwrdet_in3_vddio_hv + NET pwrdet_in3_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2414845 750 ) N ;
-   - pwrdet_rst_por_hv_n + NET pwrdet_rst_por_hv_n
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2420510 750 ) N ;
-   - project_id[0] + NET project_id[0]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2509390 420 ) N ;
-   - project_id[1] + NET project_id[1]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2510310 420 ) N ;
-   - project_id[2] + NET project_id[2]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2511230 420 ) N ;
-   - project_id[3] + NET project_id[3]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2512150 420 ) N ;
-   - project_id[4] + NET project_id[4]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2513070 420 ) N ;
-   - project_id[5] + NET project_id[5]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2513990 420 ) N ;
-   - project_id[6] + NET project_id[6]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2514910 420 ) N ;
-   - project_id[7] + NET project_id[7]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2515830 420 ) N ;
-   - project_id[8] + NET project_id[8]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2516750 420 ) N ;
-   - project_id[9] + NET project_id[9]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2517670 420 ) N ;
-   - project_id[10] + NET project_id[10]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2518590 420 ) N ;
-   - project_id[11] + NET project_id[11]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2519510 420 ) N ;
-   - project_id[12] + NET project_id[12]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2520430 420 ) N ;
-   - project_id[13] + NET project_id[13]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2521350 420 ) N ;
-   - project_id[14] + NET project_id[14]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2522270 420 ) N ;
-   - project_id[15] + NET project_id[15]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2523190 420 ) N ;
-   - project_id[16] + NET project_id[16]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2524110 420 ) N ;
-   - project_id[17] + NET project_id[17]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2525030 420 ) N ;
-   - project_id[18] + NET project_id[18]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2525950 420 ) N ;
-   - project_id[19] + NET project_id[19]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2526870 420 ) N ;
-   - project_id[20] + NET project_id[20]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2527790 420 ) N ;
-   - project_id[21] + NET project_id[21]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2528710 420 ) N ;
-   - project_id[22] + NET project_id[22]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2529630 420 ) N ;
-   - project_id[23] + NET project_id[23]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2530550 420 ) N ;
-   - project_id[24] + NET project_id[24]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2531470 420 ) N ;
-   - project_id[25] + NET project_id[25]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2532390 420 ) N ;
-   - project_id[26] + NET project_id[26]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2533310 420 ) N ;
-   - project_id[27] + NET project_id[27]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2534230 420 ) N ;
-   - project_id[28] + NET project_id[28]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2535150 420 ) N ;
-   - project_id[29] + NET project_id[29]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2536070 420 ) N ;
-   - project_id[30] + NET project_id[30]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2536990 420 ) N ;
-   - project_id[31] + NET project_id[31]
-     + PORT
-        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2537910 420 ) N ;
-   - pwrdet_in1_vddd_hv + NET pwrdet_in1_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2375760 750 ) N ;
-   - pwrdet_out1_vddio_hv + NET pwrdet_out1_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2377330 750 ) N ;
-   - pwrdet_out2_vddd_hv + NET pwrdet_out2_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2378415 750 ) N ;
-   - pwrdet_out3_vddd_hv + NET pwrdet_out3_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2379575 750 ) N ;
-   - pwrdet_vddio_present_vddd_hv + NET pwrdet_vddio_present_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2381040 750 ) N ;
-   - pwrdet_out3_vddio_hv + NET pwrdet_out3_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2387705 750 ) N ;
-   - pwrdet_tie_lo_esd + NET pwrdet_tie_lo_esd
-     + PORT
-        + LAYER met2 ( -195 -750 ) ( 195 750 )        + PLACED ( 2409440 750 ) N ;
-   - pwrdet_in3_vddd_hv + NET pwrdet_in3_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2411105 750 ) N ;
-   - pwrdet_out2_vddio_hv + NET pwrdet_out2_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2370605 750 ) N ;
-   - pwrdet_out1_vddd_hv + NET pwrdet_out1_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2371765 750 ) N ;
-   - pwrdet_in1_vddio_hv + NET pwrdet_in1_vddio_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2373000 750 ) N ;
-   - pwrdet_in2_vddd_hv + NET pwrdet_in2_vddd_hv
-     + PORT
-        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2374060 750 ) N ;
+PINS 2288 ;
    - gpio3_2_tie_lo_esd + NET gpio3_2_tie_lo_esd
      + PORT
         + LAYER met2 ( -130 -500 ) ( 130 500 )        + PLACED ( 2807730 4770150 ) N ;
@@ -2321,6 +2177,150 @@ PINS 2296 ;
    - gpio8_7_one + NET gpio8_7_one
      + PORT
         + LAYER met2 ( -130 -500 ) ( 130 500 )        + PLACED ( 2056935 500 ) N ;
+   - pwrdet_in2_vddio_hv + NET pwrdet_in2_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2413660 750 ) N ;
+   - pwrdet_in3_vddio_hv + NET pwrdet_in3_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2414845 750 ) N ;
+   - pwrdet_rst_por_hv_n + NET pwrdet_rst_por_hv_n
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2420510 750 ) N ;
+   - pwrdet_in1_vddd_hv + NET pwrdet_in1_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2375760 750 ) N ;
+   - pwrdet_out1_vddio_hv + NET pwrdet_out1_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2377330 750 ) N ;
+   - pwrdet_out2_vddd_hv + NET pwrdet_out2_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2378415 750 ) N ;
+   - pwrdet_out3_vddd_hv + NET pwrdet_out3_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2379575 750 ) N ;
+   - pwrdet_vddio_present_vddd_hv + NET pwrdet_vddio_present_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2381040 750 ) N ;
+   - pwrdet_out3_vddio_hv + NET pwrdet_out3_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2387705 750 ) N ;
+   - pwrdet_tie_lo_esd + NET pwrdet_tie_lo_esd
+     + PORT
+        + LAYER met2 ( -195 -750 ) ( 195 750 )        + PLACED ( 2409440 750 ) N ;
+   - pwrdet_in3_vddd_hv + NET pwrdet_in3_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2411105 750 ) N ;
+   - pwrdet_out2_vddio_hv + NET pwrdet_out2_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2370605 750 ) N ;
+   - pwrdet_out1_vddd_hv + NET pwrdet_out1_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2371765 750 ) N ;
+   - pwrdet_in1_vddio_hv + NET pwrdet_in1_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2373000 750 ) N ;
+   - pwrdet_in2_vddd_hv + NET pwrdet_in2_vddd_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2374060 750 ) N ;
+   - pwrdet_vddd_present_vddio_hv + NET pwrdet_vddd_present_vddio_hv
+     + PORT
+        + LAYER met2 ( -130 -750 ) ( 130 750 )        + PLACED ( 2412375 750 ) N ;
+   - project_id[29] + NET project_id[29]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2536070 420 ) N ;
+   - project_id[30] + NET project_id[30]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2536990 420 ) N ;
+   - project_id[31] + NET project_id[31]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2537910 420 ) N ;
+   - project_id[0] + NET project_id[0]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2509390 420 ) N ;
+   - project_id[1] + NET project_id[1]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2510310 420 ) N ;
+   - project_id[2] + NET project_id[2]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2511230 420 ) N ;
+   - project_id[3] + NET project_id[3]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2512150 420 ) N ;
+   - project_id[4] + NET project_id[4]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2513070 420 ) N ;
+   - project_id[5] + NET project_id[5]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2513990 420 ) N ;
+   - project_id[6] + NET project_id[6]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2514910 420 ) N ;
+   - project_id[7] + NET project_id[7]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2515830 420 ) N ;
+   - project_id[8] + NET project_id[8]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2516750 420 ) N ;
+   - project_id[9] + NET project_id[9]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2517670 420 ) N ;
+   - project_id[10] + NET project_id[10]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2518590 420 ) N ;
+   - project_id[11] + NET project_id[11]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2519510 420 ) N ;
+   - project_id[12] + NET project_id[12]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2520430 420 ) N ;
+   - project_id[13] + NET project_id[13]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2521350 420 ) N ;
+   - project_id[14] + NET project_id[14]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2522270 420 ) N ;
+   - project_id[15] + NET project_id[15]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2523190 420 ) N ;
+   - project_id[16] + NET project_id[16]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2524110 420 ) N ;
+   - project_id[17] + NET project_id[17]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2525030 420 ) N ;
+   - project_id[18] + NET project_id[18]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2525950 420 ) N ;
+   - project_id[19] + NET project_id[19]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2526870 420 ) N ;
+   - project_id[20] + NET project_id[20]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2527790 420 ) N ;
+   - project_id[21] + NET project_id[21]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2528710 420 ) N ;
+   - project_id[22] + NET project_id[22]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2529630 420 ) N ;
+   - project_id[23] + NET project_id[23]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2530550 420 ) N ;
+   - project_id[24] + NET project_id[24]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2531470 420 ) N ;
+   - project_id[25] + NET project_id[25]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2532390 420 ) N ;
+   - project_id[26] + NET project_id[26]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2533310 420 ) N ;
+   - project_id[27] + NET project_id[27]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2534230 420 ) N ;
+   - project_id[28] + NET project_id[28]
+     + PORT
+        + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2535150 420 ) N ;
    - product_id[0] + NET product_id[0]
      + PORT
         + LAYER met2 ( -140 -420 ) ( 140 420 )        + PLACED ( 2642190 420 ) N ;
@@ -2504,26 +2504,6 @@ PINS 2296 ;
    - sio_pad_a_esd_0_h[0] + NET sio_pad_a_esd_0_h[0]
      + PORT
         + LAYER met2 ( -425 -750 ) ( 425 750 )        + PLACED ( 3055470 47465 ) N ;
-   - VGND + NET VGND
-     + USE GROUND
-     + PORT
-        + LAYER met3 ( -11975 -10000 ) ( 11975 10000 )        + PLACED ( 2563425 10000 ) N 
-     + PORT
-        + LAYER met3 ( -12000 -10000 ) ( 12000 10000 )        + PLACED ( 2613650 10000 ) N 
-     + PORT
-        + LAYER met3 ( -12000 -10000 ) ( 12000 10000 )        + PLACED ( 993650 10000 ) N 
-     + PORT
-        + LAYER met3 ( -11975 -10000 ) ( 11975 10000 )        + PLACED ( 943425 10000 ) N ;
-   - VPWR + NET VPWR
-     + USE POWER
-     + PORT
-        + LAYER met3 ( -11975 -10000 ) ( 11975 10000 )        + PLACED ( 1623425 10000 ) N 
-     + PORT
-        + LAYER met3 ( -12005 -10000 ) ( 12005 10000 )        + PLACED ( 1673655 9995 ) N 
-     + PORT
-        + LAYER met3 ( -12005 -10000 ) ( 12005 10000 )        + PLACED ( 88655 10000 ) N 
-     + PORT
-        + LAYER met3 ( -11975 -10000 ) ( 11975 10000 )        + PLACED ( 38425 10000 ) N ;
    - gpio2_6_tie_lo_esd + NET gpio2_6_tie_lo_esd
      + PORT
         + LAYER met3 ( -750 -175 ) ( 750 175 )        + PLACED ( 3169550 4314315 ) N ;

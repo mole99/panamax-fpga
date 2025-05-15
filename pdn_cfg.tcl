@@ -140,3 +140,7 @@ add_pdn_connect \
 add_pdn_connect \
     -grid stdcell_grid \
     -layers "met4 met3"
+
+add_pdn_connect \
+    -grid stdcell_grid \
+    -layers "met5 met5"

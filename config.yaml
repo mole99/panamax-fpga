@@ -62,7 +62,7 @@ CLOCK_PERIOD: 20 # TODO
 
 # CTS
 CTS_OBSTRUCTION_AWARE: true
-#CTS_CLK_MAX_WIRE_LENGTH: 1000
+CTS_CLK_MAX_WIRE_LENGTH: 1000
 #CTS_SINK_CLUSTERING_SIZE: 30
 #CTS_SINK_CLUSTERING_MAX_DIAMETER: 150
 
@@ -78,13 +78,13 @@ DESIGN_REPAIR_BUFFER_INPUT_PORTS: false
 DESIGN_REPAIR_BUFFER_OUTPUT_PORTS: false
 
 # Overfix hold violations
-PL_RESIZER_HOLD_SLACK_MARGIN: 0.5
+PL_RESIZER_HOLD_SLACK_MARGIN: 0.2
 
 VDD_NETS:
-- VPWR
+- DVPWR
 
 GND_NETS:
-- VGND
+- DVGND
 
 #FP_PDN_VSPACING: 1.6
 #FP_PDN_HSPACING: 1.6
@@ -92,6 +92,13 @@ GND_NETS:
 #FP_PDN_HPITCH: 6.4
 
 FP_PDN_CFG: dir::pdn_cfg.tcl
+
+FP_PDN_VWIDTH: 2.0
+FP_PDN_HWIDTH: 2.5
+FP_PDN_VSPACING: 1.7
+FP_PDN_HSPACING: 1.7
+FP_PDN_VPITCH: 50
+FP_PDN_HPITCH: 50
 
 FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
@@ -107,7 +114,7 @@ CORE_AREA: [  20.00,   20.00, 3150.300, 4750.650 ]
 
 FP_DEF_TEMPLATE: dir::ip/panamax_core_pins/def/panamax_core_pins.def
 FP_TEMPLATE_MATCH_MODE: permissive
-FP_TEMPLATE_COPY_POWER_PINS: True
+#FP_TEMPLATE_COPY_POWER_PINS: True
 
 PL_TARGET_DENSITY_PCT: 20 # TODO
 
@@ -115,7 +122,7 @@ FP_OBSTRUCTIONS:
 # SIO
 - [2651.15, 0.00, 3170.30, 55.215]
 # ADC/DAC area
-- [800, 0.00, 1700, 270]
+- [790, 0.00, 1720, 290]
 
 PDN_OBSTRUCTIONS:
 # SIO
@@ -125,8 +132,10 @@ PDN_OBSTRUCTIONS:
 - [met4, 2661.15, 0.00, 3141.15, 46.715]
 - [met5, 2661.15, 0.00, 3141.15, 46.715]
 # ADC/DAC area
-- [met4, 800, 20, 1700, 270]
-- [met5, 800, 20, 1700, 270]
+- [met4, 790, 0.00, 1720, 290] #[met4, 800, 20, 1700, 270]
+- [met5, 790, 0.00, 1720, 290] #[met5, 800, 20, 1700, 270]
+# Logo
+- [met5, 2665, 120, 3065, 265]
 
 ROUTING_OBSTRUCTIONS:
 # SIO
@@ -136,7 +145,9 @@ ROUTING_OBSTRUCTIONS:
 - [met4, 2661.15, 0.00, 3141.15, 46.715]
 - [met5, 2661.15, 0.00, 3141.15, 46.715]
 # ADC/DAC area
-- [met4, 800, 0.00, 1700, 270]
+#- [met4, 800, 0.00, 1700, 270]
+# Logo
+- [met5, 2665, 120, 3065, 265]
 
 # Magic: Use LEF/DEF to prevent error on the SRAMs
 MAGIC_DRC_USE_GDS: False
@@ -174,8 +185,8 @@ MACROS:
       - dir::ip/sky130_ef_ip__simple_por/verilog/simple_por4x.v
     instances: 
       simple_por4x:
-        location: [1618, 100]
-        orientation: N
+        location: [1613, 100]
+        orientation: S
 
   sky130_ef_ip__adc3v_12bit:
     gds:
@@ -248,24 +259,24 @@ MACROS:
       - dir::ip/manual_routing/gds/manual_routing.gds.gz
     lef:
       - dir::ip/manual_routing/lef/manual_routing.lef
-    instances:
-      manual_routing:
-        location: [0, 0]
-        orientation: N
     nl:
       - dir::ip/manual_routing/gl/manual_routing.v
-
+    #instances:
+    #  manual_routing:
+    #    location: [0, 0]
+    #    orientation: N
 
 PDN_MACRO_CONNECTIONS:
-  - "panamax_fpga_core.fabric_wrapper.eFPGA VPWR VGND VPWR VGND"
-  - "panamax_fpga_core.fabric_wrapper.bram_0 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_1 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_2 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_3 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_4 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_5 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_6 VPWR VGND vccd1 vssd1"
-  - "panamax_fpga_core.fabric_wrapper.bram_7 VPWR VGND vccd1 vssd1"
-#  - "simple_por4x VPWR VGND vdd3v3 vss3v3"
-#  - "simple_por4x VPWR VGND vdd1v8 vss1v8"
+  - "panamax_fpga_core.fabric_wrapper.eFPGA DVPWR DVGND VPWR VGND"
+  - "panamax_fpga_core.fabric_wrapper.bram_0 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_1 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_2 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_3 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_4 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_5 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_6 DVPWR DVGND vccd1 vssd1"
+  - "panamax_fpga_core.fabric_wrapper.bram_7 DVPWR DVGND vccd1 vssd1"
+#  - "manual_routing DVPWR DVGND DVPWR DVGND"
+#  - "simple_por4x DVPWR DVGND vdd3v3 vss3v3"
+#  - "simple_por4x DVPWR DVGND vdd1v8 vss1v8"
 

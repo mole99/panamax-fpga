@@ -2438,7 +2438,12 @@ module panamax_fpga_top (
     assign pwrdet_in3_vddio_hv = 1'b0;
     assign pwrdet_rst_por_hv_n = 1'b0;
     
-    (* keep *) manual_routing manual_routing();
+    /*(* keep *) manual_routing manual_routing(
+        `ifdef USE_POWER_PINS
+        .DVPWR  (DVPWR),
+        .DVGND  (DVGND)
+        `endif
+    );*/
 
 endmodule
 
