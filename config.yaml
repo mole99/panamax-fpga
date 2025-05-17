@@ -4,18 +4,19 @@ meta:
   substituting_steps:
     Checker.YosysSynthChecks: null
     
+    # Allow assignments for porb_h
     Checker.NetlistAssignStatements: null
     
-    #Magic.WriteLEF: null
+    # For debugging
+    +OpenROAD.GeneratePDN: Magic.StreamOut
     
-    Checker.DisconnectedPins: null # TODO remove
+    # Ignore disconnected pins
+    Checker.DisconnectedPins: null
     
-    #OpenROAD.RepairAntennas: null # TODO remove
+    # TODO reenable again?
+    OpenROAD.IRDropReport: null
     
-    OpenROAD.IRDropReport: null #TODO
-    
-    #Magic.StreamOut: null #TODO
-    
+    # Not needed
     Magic.WriteLef: null
     Odb.CheckDesignAntennaProperties: null
     
@@ -29,6 +30,8 @@ meta:
     # We run LVS manually
     Netgen.LVS: null
     
+    # Some macros overlap on purpose
+    Checker.IllegalOverlap: null
 
 DESIGN_NAME: panamax_fpga_top
 VERILOG_FILES:
@@ -41,16 +44,13 @@ VERILOG_FILES:
 
 DEDUPLICATE_CORNERS: true
 
-
 # Magic streamout: don't blackbox macros
 MAGIC_MACRO_STD_CELL_SOURCE: PDK
 
 IGNORE_DISCONNECTED_MODULES:
     - manual_routing
-    - adc0
-    - adc1
-    - dac0
-    - dac1
+    - sky130_ef_ip__adc3v_12bit
+    - sky130_ef_ip__rdac3v_8bit
 
 # Prevent porb_h mangling
 SYNTH_DIRECT_WIRE_BUFFERING: False
@@ -93,19 +93,14 @@ VDD_NETS:
 GND_NETS:
 - DVGND
 
-#FP_PDN_VSPACING: 1.6
-#FP_PDN_HSPACING: 1.6
-#FP_PDN_VPITCH: 6.4
-#FP_PDN_HPITCH: 6.4
-
 FP_PDN_CFG: dir::pdn_cfg.tcl
 
 FP_PDN_VWIDTH: 2.0
-FP_PDN_HWIDTH: 2.5
+FP_PDN_HWIDTH: 5.0
 FP_PDN_VSPACING: 1.7
 FP_PDN_HSPACING: 1.7
 FP_PDN_VPITCH: 55
-FP_PDN_HPITCH: 55
+FP_PDN_HPITCH: 110
 
 FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
@@ -144,6 +139,26 @@ PDN_OBSTRUCTIONS:
 # Logo
 - [met5, 2665, 120, 3070, 265]
 
+# Power connections
+
+# Bottom
+- [met4, 26.45, 0, 100.66, 20]
+
+- [met4, 931.45, 0, 1005.66, 20]
+
+- [met4, 1611.45, 0, 1685.66, 20]
+
+- [met4, 2551.45, 0, 2625.66, 20]
+
+# Top
+- [met4, 3085.65, 4750.65, 3147.9, 4770.65]
+
+- [met4, 2375.64, 4750.65, 2449.905, 4770.65]
+
+- [met4, 725.65, 4750.65, 799.85, 4770.65]
+
+- [met4, 27.65, 4750.65, 89.85, 4770.65]
+
 ROUTING_OBSTRUCTIONS:
 # SIO
 - [met1, 2661.15, 0.00, 3141.15, 46.715]
@@ -155,6 +170,53 @@ ROUTING_OBSTRUCTIONS:
 #- [met4, 800, 0.00, 1700, 270]
 # Logo
 - [met5, 2665, 120, 3070, 265]
+
+
+# Power connections
+
+# Bottom
+- [met3, 26.45, 0, 100.66, 20]
+- [met4, 26.45, 0, 100.66, 20]
+
+- [met3, 931.45, 0, 1005.66, 20]
+- [met4, 931.45, 0, 1005.66, 20]
+
+- [met3, 1611.45, 0, 1685.66, 20]
+- [met4, 1611.45, 0, 1685.66, 20]
+
+- [met3, 2551.45, 0, 2625.66, 20]
+- [met4, 2551.45, 0, 2625.66, 20]
+
+# Right
+- [met3, 3150.3, 584.8, 3170.3, 659]
+
+- [met3, 3150.3, 2184.8, 3170.3, 2259.01]
+
+- [met3, 3150.3, 3487.8, 3170.3, 3562]
+
+- [met3, 3150.3, 4527.8, 3170.3, 4602.01]
+
+# Top
+- [met3, 3085.65, 4750.65, 3147.9, 4770.65]
+- [met4, 3085.65, 4750.65, 3147.9, 4770.65]
+
+- [met3, 2375.64, 4750.65, 2449.905, 4770.65]
+- [met4, 2375.64, 4750.65, 2449.905, 4770.65]
+
+- [met3, 725.65, 4750.65, 799.85, 4770.65]
+- [met4, 725.65, 4750.65, 799.85, 4770.65]
+
+- [met3, 27.65, 4750.65, 89.85, 4770.65]
+- [met4, 27.65, 4750.65, 89.85, 4770.65]
+
+# Left
+- [met3, 0, 4537, 20, 4611.2]
+
+- [met3, 0, 3497, 20, 3571.2]
+
+- [met3, 0, 2199, 20, 2273.2]
+
+- [met3, 0, 589, 20, 663.2]
 
 # Magic: Use LEF/DEF to prevent error on the SRAMs
 MAGIC_DRC_USE_GDS: False
@@ -204,11 +266,11 @@ MACROS:
       - dir::ip/res_div/gl/res_div.v
     instances:
       res_div0:
-        location: [820, 240]
-        orientation: N
+        location: [813, 240]
+        orientation: W
       res_div1:
-        location: [1130, 240]
-        orientation: N
+        location: [1123, 240]
+        orientation: W
 
   sky130_ef_ip__adc3v_12bit:
     gds:
@@ -298,7 +360,3 @@ PDN_MACRO_CONNECTIONS:
   - "panamax_fpga_core.fabric_wrapper.bram_5 DVPWR DVGND vccd1 vssd1"
   - "panamax_fpga_core.fabric_wrapper.bram_6 DVPWR DVGND vccd1 vssd1"
   - "panamax_fpga_core.fabric_wrapper.bram_7 DVPWR DVGND vccd1 vssd1"
-#  - "manual_routing DVPWR DVGND DVPWR DVGND"
-#  - "simple_por4x DVPWR DVGND vdd3v3 vss3v3"
-#  - "simple_por4x DVPWR DVGND vdd1v8 vss1v8"
-

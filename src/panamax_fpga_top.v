@@ -2200,40 +2200,36 @@ module panamax_fpga_top (
         .fabric_io_config_bit2_o    (fabric_io_config_bit2),
         .fabric_io_config_bit3_o    (fabric_io_config_bit3)
     );
-    
-    	(* keep *) sky130_ef_ip__rdac3v_8bit /*#(
-	    .FUNCTIONAL (0)
-	)*/ dac0 (
+
+    (* keep *) sky130_ef_ip__rdac3v_8bit dac0 (
     /*`ifdef USE_POWER_PINS
-       input       vdd,
-       input       vss,
-       input       dvdd,
-       input       dvss,
-    `endif
-       input  real Vlow,
-       input  real Vhigh,
-       input       ena,
-       input [7:0] b,
-       output real out*/
-       
+        .vdd    (AVPWR),
+        .vss    (AVGND),
+        .dvdd   (DVPWR),
+        .dvss   (DVGND),
+
+        .Vhigh  (AVPWR),
+        .Vlow   (AVGND),
+
+        .out    (xi1_core),
+    `endif*/
+
        .b   (fabric_dac0_value_o),
        .ena (fabric_dac0_enable_o)
     );
     
-    (* keep *) sky130_ef_ip__rdac3v_8bit /*#(
-	    .FUNCTIONAL (0)
-	)*/ dac1 (
+    (* keep *) sky130_ef_ip__rdac3v_8bit dac1 (
     /*`ifdef USE_POWER_PINS
-       input       vdd,
-       input       vss,
-       input       dvdd,
-       input       dvss,
-    `endif
-       input  real Vlow,
-       input  real Vhigh,
-       input       ena,
-       input [7:0] b,
-       output real out*/
+        .vdd    (AVPWR),
+        .vss    (AVGND),
+        .dvdd   (DVPWR),
+        .dvss   (DVGND),
+
+        .Vhigh  (AVPWR),
+        .Vlow   (AVGND),
+
+        .out    (xo1_core),
+    `endif*/
 
        .b   (fabric_dac1_value_o),
        .ena (fabric_dac1_enable_o)
@@ -2454,10 +2450,10 @@ module panamax_fpga_top (
     assign pwrdet_rst_por_hv_n = 1'b0;
     
     (* keep *) manual_routing manual_routing (
-    `ifdef USE_POWER_PINS
+    /*`ifdef USE_POWER_PINS
         .DVPWR  (DVPWR),
         .DVGND  (DVGND)
-    `endif
+    `endif*/
     );
 
 endmodule
