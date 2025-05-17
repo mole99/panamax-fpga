@@ -17,7 +17,7 @@ ly3.read("../ip/logo/gds/logo.gds")
 
 # Core connections
 ly4 = pya.Layout()
-ly4.read("../ip/gds/panamax_core_connections.gds.gz")
+ly4.read("../ip/panamax_core_pins/gds/panamax_core_connections.gds.gz")
 
 # Use move_tree instead of copy_tree
 # -> more memory efficient
@@ -47,7 +47,7 @@ top.insert(pya.DCellInstArray(cell2.cell_index(),
     pya.DTrans(pya.DTrans.R0, pya.DPoint(0, 0))))
 
 top.insert(pya.DCellInstArray(cell3.cell_index(),
-    pya.DTrans(pya.DTrans.R0, pya.DPoint(0, 0))))
+    pya.DTrans(pya.DTrans.R0, pya.DPoint(2878, 370))))
 
 top.insert(pya.DCellInstArray(cell4.cell_index(),
     pya.DTrans(pya.DTrans.R0, pya.DPoint(208.85, 208.5))))

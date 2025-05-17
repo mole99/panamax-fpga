@@ -19,11 +19,15 @@ meta:
     Magic.WriteLef: null
     Odb.CheckDesignAntennaProperties: null
     
-    # Apply the DEF template before PDN
-    #Odb.ApplyDEFTemplate: null
-    #-OpenROAD.GeneratePDN: Odb.ApplyDEFTemplate
-    
+    # KLayout doesn't streamout the OpenRAM (?)
+    KLayout.StreamOut: null
     KLayout.XOR: null
+    
+    # Magic has issues with the OpenRAM
+    Magic.DRC: null
+    
+    # We run LVS manually
+    Netgen.LVS: null
     
 
 DESIGN_NAME: panamax_fpga_top
@@ -58,17 +62,20 @@ PL_TIME_DRIVEN: False
 # Clock
 CLOCK_NET: xclk
 CLOCK_PORT: gpio8_0_in
-CLOCK_PERIOD: 20 # TODO
+CLOCK_PERIOD: 20
+
+# SDC
+FALLBACK_SDC_FILE: dir::base.sdc
 
 # CTS
 CTS_OBSTRUCTION_AWARE: true
-CTS_CLK_MAX_WIRE_LENGTH: 1000
-#CTS_SINK_CLUSTERING_SIZE: 30
-#CTS_SINK_CLUSTERING_MAX_DIAMETER: 150
+CTS_CLK_MAX_WIRE_LENGTH: 1200
+CTS_SINK_CLUSTERING_SIZE: 25 # default 25
+CTS_SINK_CLUSTERING_MAX_DIAMETER: 60 # default 50
 
 # Routing
 GRT_ALLOW_CONGESTION: true
-#RT_CLOCK_MAX_LAYER: met4
+RT_CLOCK_MAX_LAYER: met4
 #RT_MAX_LAYER: met4
 #DRT_MAX_LAYER: met4
 
@@ -97,8 +104,8 @@ FP_PDN_VWIDTH: 2.0
 FP_PDN_HWIDTH: 2.5
 FP_PDN_VSPACING: 1.7
 FP_PDN_HSPACING: 1.7
-FP_PDN_VPITCH: 50
-FP_PDN_HPITCH: 50
+FP_PDN_VPITCH: 55
+FP_PDN_HPITCH: 55
 
 FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
@@ -135,7 +142,7 @@ PDN_OBSTRUCTIONS:
 - [met4, 790, 0.00, 1720, 290] #[met4, 800, 20, 1700, 270]
 - [met5, 790, 0.00, 1720, 290] #[met5, 800, 20, 1700, 270]
 # Logo
-- [met5, 2665, 120, 3065, 265]
+- [met5, 2665, 120, 3070, 265]
 
 ROUTING_OBSTRUCTIONS:
 # SIO
@@ -147,7 +154,7 @@ ROUTING_OBSTRUCTIONS:
 # ADC/DAC area
 #- [met4, 800, 0.00, 1700, 270]
 # Logo
-- [met5, 2665, 120, 3065, 265]
+- [met5, 2665, 120, 3070, 265]
 
 # Magic: Use LEF/DEF to prevent error on the SRAMs
 MAGIC_DRC_USE_GDS: False
@@ -173,7 +180,7 @@ MACROS:
       panamax_fpga_core.fabric_wrapper.eFPGA:
         # Height should be multiple of 0.68 (met3 pitch)
         # Width should be multiple of 0.46 (met2 pitch)
-        location: [197.8, 349.52]
+        location: [237.8, 349.52]
         orientation: N
 
   sky130_ef_ip__simple_por4x:
@@ -187,6 +194,21 @@ MACROS:
       simple_por4x:
         location: [1613, 100]
         orientation: S
+
+  res_div:
+    gds:
+      - dir::ip/res_div/gds/res_div.gds.gz
+    lef:
+      - dir::ip/res_div/lef/res_div.lef
+    nl:
+      - dir::ip/res_div/gl/res_div.v
+    instances:
+      res_div0:
+        location: [820, 240]
+        orientation: N
+      res_div1:
+        location: [1130, 240]
+        orientation: N
 
   sky130_ef_ip__adc3v_12bit:
     gds:
@@ -230,28 +252,28 @@ MACROS:
     #    - pdk_dir::libs.ref/sky130_sram_macros/lib/sky130_sram_1kbyte_1rw1r_32x256_8_TT_1p8V_25C.lib
     instances: 
       panamax_fpga_core.fabric_wrapper.bram_0:
-        location: [2625, 4100]
+        location: [2635, 4100]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_1:
-        location: [2625, 3580]
+        location: [2635, 3580]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_2:
-        location: [2625, 3060]
+        location: [2635, 3060]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_3:
-        location: [2625, 2540]
+        location: [2635, 2540]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_4:
-        location: [2625, 2020]
+        location: [2635, 2020]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_5:
-        location: [2625, 1500]
+        location: [2635, 1500]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_6:
-        location: [2625, 980]
+        location: [2635, 980]
         orientation: N
       panamax_fpga_core.fabric_wrapper.bram_7:
-        location: [2625, 460]
+        location: [2635, 460]
         orientation: N
 
   manual_routing:
@@ -261,10 +283,10 @@ MACROS:
       - dir::ip/manual_routing/lef/manual_routing.lef
     nl:
       - dir::ip/manual_routing/gl/manual_routing.v
-    #instances:
-    #  manual_routing:
-    #    location: [0, 0]
-    #    orientation: N
+    instances:
+      manual_routing:
+        location: [0, 0]
+        orientation: N
 
 PDN_MACRO_CONNECTIONS:
   - "panamax_fpga_core.fabric_wrapper.eFPGA DVPWR DVGND VPWR VGND"

@@ -2055,8 +2055,16 @@ module panamax_fpga_top (
 
     wire xclk;
     
+    // Sync reset
+    reg [1:0] xrst_n_d;
     wire xrst_n;
-    assign xrst_n = resetb_xres_n;
+    always @(posedge xclk) begin
+        xrst_n_d <= {xrst_n_d[0], resetb_xres_n};
+    end
+    assign xrst_n = xrst_n_d[1];
+    
+    //wire xrst_n;
+    //assign xrst_n = resetb_xres_n;
     
     (* dont_touch *) wire porb_h;
     
@@ -2231,60 +2239,68 @@ module panamax_fpga_top (
        .ena (fabric_dac1_enable_o)
     );
     
-    (* keep *) sky130_ef_ip__adc3v_12bit /*#(
-	    .FUNCTIONAL (0)
-	)*/ adc0 (
-    /*`ifdef USE_POWER_PINS
-       inout       vccd0,
-       inout       vssd0,
-       inout       vdda0,
-       inout       vssa0,
+    `ifdef USE_POWER_PINS
+    wire adc0_vref;
+    wire adc1_vref;
     `endif
-       input  real  adc_trim,
-       input  real  adc_vCM,
-       input  real  adc_vrefL,
-       input  real  adc_vrefH,
-       input  real  adc0,
-       input        adc0_ena,
-       input        adc0_reset,
-       input        adc0_hold,
-       input [11:0] adc0_dac_val_0,
-       output       adc0_comp_out*/
-       
-       .adc0_ena        (1'b1),
-       .adc0_reset      (fabric_adc0_reset_o),
-       .adc0_hold       (fabric_adc0_hold_o),
-       .adc0_dac_val_0  (fabric_adc0_value_o),
-       .adc0_comp_out   (fabric_adc0_cmp_i)
+    
+    (* keep *) res_div res_div0 (
+    `ifdef USE_POWER_PINS
+        .vdda  (AVPWR),
+        .vssa  (AVGND),
+        .vref  (adc0_vref)
+    `endif
     );
     
-    (* keep *) sky130_ef_ip__adc3v_12bit /*#(
-	    .FUNCTIONAL (0)
-	)*/ adc1 (
-    /*`ifdef USE_POWER_PINS
-       inout       vccd0,
-       inout       vssd0,
-       inout       vdda0,
-       inout       vssa0,
+    (* keep *) res_div res_div1 (
+    `ifdef USE_POWER_PINS
+        .vdda  (AVPWR),
+        .vssa  (AVGND),
+        .vref  (adc1_vref)
     `endif
-       input  real  adc_trim,
-       input  real  adc_vCM,
-       input  real  adc_vrefL,
-       input  real  adc_vrefH,
-       input  real  adc0,
-       input        adc0_ena,
-       input        adc0_reset,
-       input        adc0_hold,
-       input [11:0] adc0_dac_val_0,
-       output       adc0_comp_out*/
-       
-       .adc0_ena        (1'b1),
-       .adc0_reset      (fabric_adc1_reset_o),
-       .adc0_hold       (fabric_adc1_hold_o),
-       .adc0_dac_val_0  (fabric_adc1_value_o),
-       .adc0_comp_out   (fabric_adc1_cmp_i)
     );
     
+    (* keep *) sky130_ef_ip__adc3v_12bit adc0 (
+    `ifdef USE_POWER_PINS
+        .vccd0  (DVPWR),
+        .vssd0  (DVGND),
+        .vdda0  (AVPWR),
+        .vssa0  (AVGND),
+       
+        .adc_trim   (AVGND),
+        .adc_vCM    (adc0_vref),
+        .adc_vrefL  (AVGND),
+        .adc_vrefH  (AVPWR),
+        .adc_in     (xi0_core),
+    `endif
+
+       .adc_ena        (1'b1),
+       .adc_reset      (fabric_adc0_reset_o),
+       .adc_hold       (fabric_adc0_hold_o),
+       .adc_dac_val    (fabric_adc0_value_o),
+       .adc_comp_out   (fabric_adc0_cmp_i)
+    );
+    
+    (* keep *) sky130_ef_ip__adc3v_12bit adc1 (
+    `ifdef USE_POWER_PINS
+        .vccd0  (DVPWR),
+        .vssd0  (DVGND),
+        .vdda0  (AVPWR),
+        .vssa0  (AVGND),
+       
+        .adc_trim   (AVGND),
+        .adc_vCM    (adc1_vref),
+        .adc_vrefL  (AVGND),
+        .adc_vrefH  (AVPWR),
+        .adc_in     (xo0_core),
+    `endif
+
+       .adc_ena        (1'b1),
+       .adc_reset      (fabric_adc1_reset_o),
+       .adc_hold       (fabric_adc1_hold_o),
+       .adc_dac_val    (fabric_adc1_value_o),
+       .adc_comp_out   (fabric_adc1_cmp_i)
+    );
     
     wire [0:0] unused;
 
@@ -2313,9 +2329,9 @@ module panamax_fpga_top (
     assign sio_ibuf_sel_refgen  = gpio0_0_zero; // TODO
     assign sio_vtrip_sel_refgen = gpio0_0_zero; // TODO
     assign sio_dft_refgen       = gpio0_0_zero; // disable ADFT
-    // assign sio_vohref           = 1'b1; // TODO: Analog connection
-    // sio_vinref_dft // ADFT test point TODO
-    // voutref_dft // ADFT test point TODO
+    // assign sio_vohref           = 1'b1; // TODO: Analog connection -> ground to vssa
+    // sio_vinref_dft // ADFT test point -> floating
+    // voutref_dft // ADFT test point -> our reference for vcm
 
 
     // SIO 1 (GPIO 73)
@@ -2333,7 +2349,7 @@ module panamax_fpga_top (
     assign sio_ibuf_sel[1]          = gpio0_0_zero;
     assign sio_vreg_en[1]           = gpio0_0_zero; // TODO
     
-    assign sio_voh_sel              = {gpio0_0_zero, gpio0_0_zero, gpio0_0_zero}; // n = Rtap/Rtotal = 1
+    assign sio_voh_sel              = {gpio0_0_one, gpio0_0_zero, gpio0_0_zero}; // n = Rtap/Rtotal = 1
     assign sio_vref_sel             = {gpio0_0_zero, gpio0_0_zero}; // Vohref
     assign sio_vreg_en_refgen       = gpio0_0_zero; // disable refgen
     
@@ -2363,8 +2379,6 @@ module panamax_fpga_top (
     assign muxsplit_sw_enable_vdda_h = porb_h ;
     assign muxsplit_sw_hld_vdda_h_n = gpio7_7_tie_hi_esd; // nearest tie hi esd
 
-    // TODO assign correct values
-    // Unused
     // Can be used to route analog signals in the padring
     assign muxsplit_ne_switch_aa_sl = 1'b0;
     assign muxsplit_ne_switch_aa_s0 = 1'b0;
@@ -2400,14 +2414,15 @@ module panamax_fpga_top (
     assign vref_w_enable_h = porb_h;
     assign vref_w_hld_h_n = gpio6_4_tie_hi_esd; // nearest tie hi esd
 
-    // TODO vref_e_ref_sel
-    // TODO vref_e_vrefgen_en
-    // TODO vref_w_ref_sel
-    // TODO vref_w_vrefgen_en
-    
-    // TODO analog vref_e_vinref
-    // TODO analog vref_w_vinref
+    // Doesn't matter, we don't use vrefs
+    assign vref_e_ref_sel = 5'b01111;
+    assign vref_e_vrefgen_en = 1'b1;
 
+    assign vref_w_ref_sel = 5'b01111;
+    assign vref_w_vrefgen_en = 1'b1;
+    
+    // analog vref_e_vinref
+    // analog vref_w_vinref
 
     // Select
     //assign mgmt_select = select_in;
@@ -2438,12 +2453,12 @@ module panamax_fpga_top (
     assign pwrdet_in3_vddio_hv = 1'b0;
     assign pwrdet_rst_por_hv_n = 1'b0;
     
-    /*(* keep *) manual_routing manual_routing(
-        `ifdef USE_POWER_PINS
+    (* keep *) manual_routing manual_routing (
+    `ifdef USE_POWER_PINS
         .DVPWR  (DVPWR),
         .DVGND  (DVGND)
-        `endif
-    );*/
+    `endif
+    );
 
 endmodule
 
