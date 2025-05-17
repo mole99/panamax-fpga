@@ -5,7 +5,7 @@ top = ly_new.create_cell("panamax_fpga")
 
 # Core
 ly1 = pya.Layout()
-ly1.read("../macro/gds/panamax_fpga_top.gds")
+ly1.read("../macro/gds/panamax_fpga_top.gds.gz")
 
 # Padring
 ly2 = pya.Layout()

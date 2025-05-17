@@ -15,8 +15,17 @@ from cocotbext.uart import UartSource, UartSink
 
 # TODO add bitstream file
 
-flash1_slot0 = '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex'
-flash1_slot1 = ''
+fpga_all_ones = {
+    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex',
+    'flash1_slot1' : '',
+}
+
+fpga_all_zeros = {
+    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_zeros/all_zeros.hex',
+    'flash1_slot1' : '',
+}
+
+enabled = fpga_all_zeros
 
 async def start_clock(clock, freq=50):
     """ Start the clock @ freq MHz """
@@ -89,9 +98,9 @@ async def start_up(dut):
     await reset(dut.resetb_tb)
 
 
-@cocotb.test(skip=False)
-async def test_hello_world(dut):
-    """Run the "Hello World!" program"""
+@cocotb.test(skip=not (enabled == fpga_all_zeros or enabled == fpga_all_ones))
+async def test_fpga_controller(dut):
+    """Init the bitstream as controller"""
 
     # Setup UART
     #uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
@@ -140,6 +149,7 @@ if __name__ == "__main__":
         # Analog
         testbench_path / '../ip/sky130_ef_ip__rdac3v_8bit/verilog/sky130_ef_ip__rdac3v_8bit.v',
         testbench_path / '../ip/sky130_ef_ip__adc3v_12bit/verilog/sky130_ef_ip__adc3v_12bit.v',
+        testbench_path / '../ip/res_div/gl/res_div.v',
         testbench_path / '../ip/manual_routing/gl/manual_routing.v',
         
         # Add I/O models
@@ -305,6 +315,6 @@ if __name__ == "__main__":
     runner.test(
         hdl_toplevel=hdl_toplevel,
         test_module="panamax_fpga_tb,",
-        plusargs=['-fst', f'+flash1_slot0={flash1_slot0}', f'+flash1_slot1={flash1_slot1}'],
+        plusargs=['-fst', f'+flash1_slot0={enabled["flash1_slot0"]}', f'+flash1_slot1={enabled["flash1_slot1"]}'],
         waves=True,
     )

@@ -15,22 +15,6 @@ check-hold-violations:
 	openlane config.yaml --manual-pdk --pdk sky130A --pdk-root ~/.ciel --last-run --from OpenROAD.CTS --to OpenROAD.STAPostPNR --with-initial-state runs/${RUN_TAG}/33-openroad-cts/state_in.json
 .phony: check-hold-violations
 
-lvs:
-	@echo "\
-	set circuit1 [readnet spice final/spice_edit/${TOP_CORE}.spice]\n\
-	set circuit2 [readnet verilog /dev/null]\n\
-	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice \$$circuit2\n\
-	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_io/spice/sg13g2_io.spi \$$circuit2\n\
-	readnet verilog final/pnl_edit/${TOP_CORE}.pnl.v \$$circuit2\n\
-	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/ihp-sg13g2_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
-	
-	netgen -batch source lvs_script.tcl
-.PHONY: lvs
-
-drc:
-	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/drc/sky130A_mr.drc -rd input=final/gds_fill/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
-.PHONY: drc
-
 copy-macro:
 	mkdir -p macro/pnl/
 	mkdir -p macro/spice/
@@ -54,13 +38,36 @@ copy-macro:
 	
 	gzip macro/gds/${TOP_CORE}.gds
 	gzip macro/odb/${TOP_CORE}.odb
+.PHONY: copy-macro
+
+lvs:
+	@echo "\
+	set circuit1 [readnet spice final/spice_edit/${TOP_CORE}.spice]\n\
+	set circuit2 [readnet verilog /dev/null]\n\
+	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice \$$circuit2\n\
+	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_io/spice/sg13g2_io.spi \$$circuit2\n\
+	readnet verilog final/pnl_edit/${TOP_CORE}.pnl.v \$$circuit2\n\
+	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/ihp-sg13g2_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
+	
+	netgen -batch source lvs_script.tcl
+.PHONY: lvs
+
+merge:
+	cd scripts; python3 generate_panamax_fpga.py
+.PHONY: merge
+
+create-image:
+	mkdir -p img/
+	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) klayout -z -r scripts/klayout_image.py -rd input_gds=final/gds/${TOP}.gds.gz -rd output_image=img/${TOP}.png
+	convert img/${TOP}.png -resize 25% img/${TOP}_small.png
+.PHONY: create-image
 
 fill:
-	#PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/generate_fill.py final/gds/${TOP}.gds.gz -dist
+	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/generate_fill.py final/gds/${TOP}.gds.gz -dist
 	
 	# Move the fill pattern, it's saved under gds/ because of how generate_fill works...
-	#mkdir -p final/gds_fill/
-	#mv final/gds/${TOP}_fill_pattern.gds.gz final/gds_fill/${TOP}_fill_pattern.gds.gz
+	mkdir -p final/gds_fill/
+	mv final/gds/${TOP}_fill_pattern.gds.gz final/gds_fill/${TOP}_fill_pattern.gds.gz
 	
 	# Merge layout with fill
 	python3 scripts/merge_fill.py final/gds/${TOP}.gds.gz final/gds_fill/${TOP}_fill_pattern.gds.gz final/gds_fill/${TOP}.gds.gz
@@ -69,7 +76,7 @@ fill:
 	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/check_density.py final/gds_fill/${TOP}.gds.gz
 .PHONY: fill
 
-create-image:
-	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) klayout -z -r scripts/klayout_image.py -rd input_gds=final/gds_logo/${TOP}.gds.gz -rd output_image=img/${TOP}.png
-	convert img/${TOP}.png -resize 25% img/${TOP}_small.png
-.PHONY: create-image
+drc:
+	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/drc/sky130A_mr.drc -rd input=final/gds_fill/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
+.PHONY: drc
+

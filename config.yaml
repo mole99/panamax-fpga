@@ -27,6 +27,9 @@ meta:
     # Magic has issues with the OpenRAM
     Magic.DRC: null
     
+    # We run KLayout DRC manually
+    KLayout.DRC: null
+    
     # We run LVS manually
     Netgen.LVS: null
     
