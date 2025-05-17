@@ -36,8 +36,8 @@ copy-macro:
 	cp runs/${RUN_TAG}/final/spef/min/${TOP_CORE}.min.spef macro/spef/min/${TOP_CORE}.min.spef
 	cp runs/${RUN_TAG}/final/spef/nom/${TOP_CORE}.nom.spef macro/spef/nom/${TOP_CORE}.nom.spef
 	
-	gzip macro/gds/${TOP_CORE}.gds
-	gzip macro/odb/${TOP_CORE}.odb
+	gzip --force macro/gds/${TOP_CORE}.gds
+	gzip --force macro/odb/${TOP_CORE}.odb
 .PHONY: copy-macro
 
 lvs:
@@ -62,6 +62,10 @@ create-image:
 	convert img/${TOP}.png -resize 25% img/${TOP}_small.png
 .PHONY: create-image
 
+drc:
+	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/drc/sky130A_mr.drc -rd input=final/gds/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
+.PHONY: drc
+
 fill:
 	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/generate_fill.py final/gds/${TOP}.gds.gz -dist
 	
@@ -76,7 +80,7 @@ fill:
 	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/check_density.py final/gds_fill/${TOP}.gds.gz
 .PHONY: fill
 
-drc:
-	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/drc/sky130A_mr.drc -rd input=final/gds_fill/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
-.PHONY: drc
+drc-fill:
+	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/drc/sky130A_mr.drc -rd input=final/gds_fill/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
+.PHONY: drc-fill
 

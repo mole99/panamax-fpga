@@ -31,7 +31,7 @@ A FABulous FPGA utilizing the Panamax padframe designed using open source EDA to
 
 ## Building the Core
 
-Note, you will need my OpenLane 2 branch to build the chip.
+Note, you will need my [OpenLane 2 branch](https://github.com/mole99/openlane2/tree/ihp) to build the chip.
 
 ```
 make pnr
@@ -44,6 +44,7 @@ make copy-macro
 make lvs
 make merge
 make create-image
-make fill
 make drc
+make fill
+make drc-fill
 ```

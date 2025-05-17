@@ -2305,7 +2305,7 @@ module panamax_fpga_top (
     // GPIO mapping for SIO 0 & 1
 
     // SIO 0 (GPIO 72)
-    //assign TODO       = sio_in[0];
+    //assign unused       = sio_in[0];
     assign sio_out[0]           = gpio0_0_zero;
     assign sio_oe_n[0]          = gpio0_0_one;
     assign sio_inp_dis[0]       = gpio0_0_one;
@@ -2313,25 +2313,24 @@ module panamax_fpga_top (
     assign sio_slow[0]          = gpio0_0_zero;
     assign sio_hld_ovr[0]       = gpio0_0_zero;
     assign sio_dm0              = {gpio0_0_one, gpio0_0_one, gpio0_0_zero};
-    // assign sio_enable_vddio[0]  = 1'b1; // Not exported from panamax
-    // assign sio_enable_inp_h[0]  = sio_tie_lo_esd[0]; // Not exported from panamax
+
+
     assign sio_enable_h         = porb_h;
     assign sio_hld_h_n[0]       = gpio0_0_tie_hi_esd;
     assign sio_enable_vdda_h    = porb_h;
     assign sio_ibuf_sel[0]      = gpio0_0_zero;
-    assign sio_vreg_en[0]       = gpio0_0_zero; // TODO
+    assign sio_vreg_en[0]       = gpio0_0_zero; // standard CMOS
 
     assign sio_hld_h_n_refgen   = gpio0_0_tie_hi_esd; 
-    assign sio_ibuf_sel_refgen  = gpio0_0_zero; // TODO
-    assign sio_vtrip_sel_refgen = gpio0_0_zero; // TODO
+    assign sio_ibuf_sel_refgen  = gpio0_0_zero; // SE input buffe
+    assign sio_vtrip_sel_refgen = gpio0_0_zero; // CMOS input buffer
     assign sio_dft_refgen       = gpio0_0_zero; // disable ADFT
-    // assign sio_vohref           = 1'b1; // TODO: Analog connection -> ground to vssa
+    // assign sio_vohref           = 1'b1; // input to opamp
     // sio_vinref_dft // ADFT test point -> floating
     // voutref_dft // ADFT test point -> our reference for vcm
 
-
     // SIO 1 (GPIO 73)
-    //assign TODO           = sio_in[1];
+    //assign unused           = sio_in[1];
     assign sio_out[1]               = gpio0_0_zero;
     assign sio_oe_n[1]              = gpio0_0_one;
     assign sio_inp_dis[1]           = gpio0_0_one;
@@ -2339,13 +2338,13 @@ module panamax_fpga_top (
     assign sio_slow[1]              = gpio0_0_zero;
     assign sio_hld_ovr[1]           = gpio0_0_zero;
     assign sio_dm1                  = {gpio0_0_one, gpio0_0_one, gpio0_0_zero};
-    // assign sio_enable_vddio[1]      = 1'b1; // Not exported from panamax
-    // assign sio_enable_inp_h[1]      = sio_tie_lo_esd[1]; // Not exported from panamax
+
+
     assign sio_hld_h_n[1]           = gpio0_0_tie_hi_esd;
     assign sio_ibuf_sel[1]          = gpio0_0_zero;
-    assign sio_vreg_en[1]           = gpio0_0_zero; // TODO
+    assign sio_vreg_en[1]           = gpio0_0_zero; // standard CMOS
     
-    assign sio_voh_sel              = {gpio0_0_one, gpio0_0_zero, gpio0_0_zero}; // n = Rtap/Rtotal = 1
+    assign sio_voh_sel              = {gpio0_0_one, gpio0_0_zero, gpio0_0_zero}; // n = Rtap/Rtotal = 0.48
     assign sio_vref_sel             = {gpio0_0_zero, gpio0_0_zero}; // Vohref
     assign sio_vreg_en_refgen       = gpio0_0_zero; // disable refgen
     

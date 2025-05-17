@@ -16,6 +16,8 @@ module panamax_fpga_tb;
     wire fpga_cs_n;
     wire fpga_mosi;
     wire fpga_miso;
+    
+    `ifdef BITSTREAM_FLASH
 
     spiflash_powered i_spiflash (
 	    .csb (fpga_cs_n),
@@ -25,6 +27,8 @@ module panamax_fpga_tb;
 	    .io2 (),
 	    .io3 ()
     );
+    
+    `endif
 
     // power
     wire vccd0_0;
@@ -173,22 +177,34 @@ module panamax_fpga_tb;
     wire gpio72;
     wire gpio73;
     
-    // TODO assignments
+
+    
+    // assignments
     assign gpio64 = clock_tb;
     
     assign sio0 = gpio72;
     assign sio1 = gpio73;
     
+    `ifdef BITSTREAM_FLASH
     assign fpga_sclk = gpio65;
     assign fpga_cs_n = gpio66;
     assign fpga_mosi = gpio67;
     assign gpio68 = fpga_miso;
+    `else
+    assign fpga_cs_n = 1'b1;
+    assign fpga_sclk = 1'b0;
+    assign fpga_mosi = 1'b0;
+    assign fpga_miso = gpio68;
+    `endif
     
     wire fpga_mode_i;
     assign gpio69 = fpga_mode_i;
     
     wire config_busy_o;
     assign config_busy_o = gpio70;
+    
+    wire [63:0] fpga_gpio;
+    assign fpga_gpio = {gpio63, gpio62, gpio61, gpio60, gpio59, gpio58, gpio57, gpio56, gpio55, gpio54, gpio53, gpio52, gpio51, gpio50, gpio49, gpio48, gpio47, gpio46, gpio45, gpio44, gpio43, gpio42, gpio41, gpio40, gpio39, gpio38, gpio37, gpio36, gpio35, gpio34, gpio33, gpio32, gpio31, gpio30, gpio29, gpio28, gpio27, gpio26, gpio25, gpio24, gpio23, gpio22, gpio21, gpio20, gpio19, gpio18, gpio17, gpio16, gpio15, gpio14, gpio13, gpio12, gpio11, gpio10, gpio9, gpio8, gpio7, gpio6, gpio5, gpio4, gpio3, gpio2, gpio1, gpio0};
 
     // greyhound instance
     panamax_fpga uut(
