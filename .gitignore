@@ -3,3 +3,5 @@ sim_build/
 runs/
 *.vvp
 *.fst
+lvs_script.tcl
+netgen_lvs.rpt

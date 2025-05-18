@@ -8,7 +8,7 @@ PDK = os.getenv('PDK', 'sky130A')
 os.environ['PDK_ROOT'] = PDK_ROOT
 os.environ['PDK'] = PDK
 
-top_module = 'res_div'
+top_module = 'follower_amp'
 
 gds_in = f'gds/{top_module}.gds.gz'
 lef_out = f'lef/{top_module}.lef'
@@ -20,13 +20,14 @@ magic_input += f'gds read {gds_in}\n'
 magic_input += f'load {top_module}\n'
 magic_input += f'select top cell\n'# {top_module}\n'
 
-magic_input += f'port vdda use power\n'
-magic_input += f'port vssa use ground\n'
+magic_input += f'port vdd use power\n'
+magic_input += f'port vss use ground\n'
 magic_input += f'port vsub use ground\n'
-magic_input += f'port vdda class inout\n'
-magic_input += f'port vssa class inout\n'
+magic_input += f'port vdd class inout\n'
+magic_input += f'port vss class inout\n'
 magic_input += f'port vsub class inout\n'
-magic_input += f'port vref class inout\n'
+magic_input += f'port in class inout\n'
+magic_input += f'port out class inout\n'
 
 magic_input += f'lef write {lef_out} -pinonly\n'
 

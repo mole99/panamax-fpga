@@ -42,12 +42,12 @@ copy-macro:
 
 lvs:
 	@echo "\
-	set circuit1 [readnet spice final/spice_edit/${TOP_CORE}.spice]\n\
+	set circuit1 [readnet spice macro/spice/${TOP_CORE}.spice]\n\
 	set circuit2 [readnet verilog /dev/null]\n\
-	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice \$$circuit2\n\
-	readnet spice $(PDK_ROOT)/$(PDK)/libs.ref/sg13g2_io/spice/sg13g2_io.spi \$$circuit2\n\
-	readnet verilog final/pnl_edit/${TOP_CORE}.pnl.v \$$circuit2\n\
-	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/ihp-sg13g2_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
+	readnet spice [file normalize $(PDK_ROOT)/$(PDK)/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice] \$$circuit2\n\
+	readnet verilog macro/pnl_edit/${TOP_CORE}.pnl.v \$$circuit2\n\
+	ignore class manual_routing\n\
+	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/sky130A_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
 	
 	netgen -batch source lvs_script.tcl
 .PHONY: lvs

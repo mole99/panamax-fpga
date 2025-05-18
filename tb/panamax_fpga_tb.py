@@ -14,6 +14,8 @@ from cocotb.runner import get_runner
 
 from cocotbext.spi import SpiBus, SpiConfig, SpiMaster
 
+MAX_CNT = 32
+
 fpga_all_ones = {
     'mode': 'controller',
     'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex',
@@ -27,9 +29,9 @@ fpga_all_zeros = {
     'flash1_slot1' : '',
 }
 
-fpga_counter = {
+fpga_adc_dac = {
     'mode': 'controller',
-    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/counter/counter.hex',
+    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/adc_dac/adc_dac.hex',
     'flash1_slot1' : '',
 }
 
@@ -39,7 +41,7 @@ fpga_toggle = {
     'flash1_slot1' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_zeros/all_zeros.hex',
 }
 
-enabled = fpga_all_zeros
+enabled = fpga_adc_dac
 
 async def start_clock(clock, freq=50):
     """ Start the clock @ freq MHz """
@@ -131,10 +133,6 @@ async def write_bitstream_spi(filename, spi_master):
 async def test_fpga_controller(dut):
     """Init the bitstream as controller"""
 
-    # Setup UART
-    #uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
-    #uart_sink = UartSink(dut.uart0_tx, baud=115200, bits=8)
-
     # FPGA config mode
     # if mode == 0: SPI controller
     # if mode == 1: SPI receiver
@@ -151,13 +149,12 @@ async def test_fpga_controller(dut):
     if enabled == fpga_all_ones:
         assert (dut.fpga_gpio.value == (1<<64)-1)
     
-    if enabled == fpga_counter:
-        await ClockCycles(dut.clock_tb, MAX_CNT)
-        assert(get_fabric_io(dut) == MAX_CNT-1)
+    if enabled == fpga_adc_dac:
+        await ClockCycles(dut.clock_tb, 200)
 
 @cocotb.test(skip=not enabled['mode'] == 'peripheral')
 async def test_fpga_peripheral(dut):
-    """Init the bitstream as controller"""
+    """Init the bitstream as peripheral"""
 
     # Setup SPI
     spi_bus = SpiBus.from_prefix(dut, "fpga", bus_separator="_", sclk_name="sclk", cs_name="cs_n", mosi_name='mosi', miso_name='miso')
@@ -186,9 +183,9 @@ async def test_fpga_peripheral(dut):
     spi_coroutine = await cocotb.start(write_bitstream_spi(enabled['peripheral_bitstream'], spi_master))
 
     # Wait until FPGA is configured
-    await spi_coroutine
+    #await spi_coroutine
     
-    print("FPGA configured!")
+    #print("FPGA configured!")
     
     await FallingEdge(dut.config_busy_o)
     

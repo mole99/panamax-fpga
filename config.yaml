@@ -2,7 +2,6 @@ meta:
   version: 2
   flow: Classic
   substituting_steps:
-    Checker.YosysSynthChecks: null
     
     # Allow assignments for porb_h
     Checker.NetlistAssignStatements: null
@@ -49,6 +48,9 @@ DEDUPLICATE_CORNERS: true
 
 # Magic streamout: don't blackbox macros
 MAGIC_MACRO_STD_CELL_SOURCE: PDK
+
+# Don't short top-level pins
+MAGIC_EXT_SHORT_RESISTOR: true
 
 IGNORE_DISCONNECTED_MODULES:
     - manual_routing
@@ -103,7 +105,7 @@ FP_PDN_HWIDTH: 5.0
 FP_PDN_VSPACING: 1.7
 FP_PDN_HSPACING: 1.7
 FP_PDN_VPITCH: 55
-FP_PDN_HPITCH: 110
+FP_PDN_HPITCH: 66
 
 FP_PDN_CORE_RING: true
 FP_PDN_CORE_RING_VWIDTH: 8
@@ -269,11 +271,26 @@ MACROS:
       - dir::ip/res_div/gl/res_div.v
     instances:
       res_div0:
-        location: [813, 240]
-        orientation: W
+        location: [1665, 170]
+        orientation: N
       res_div1:
-        location: [1123, 240]
-        orientation: W
+        location: [1665, 30]
+        orientation: N
+
+  follower_amp:
+    gds:
+      - dir::ip/follower_amp/gds/follower_amp.gds.gz
+    lef:
+      - dir::ip/follower_amp/lef/follower_amp.lef
+    nl:
+      - dir::ip/follower_amp/verilog/follower_amp.v
+    instances:
+      follower_amp0:
+        location: [1615, 170]
+        orientation: N
+      follower_amp1:
+        location: [1615, 30]
+        orientation: N
 
   sky130_ef_ip__adc3v_12bit:
     gds:

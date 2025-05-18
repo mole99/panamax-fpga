@@ -290,11 +290,11 @@ module panamax_fpga_top (
 	inout wire	sio_amuxbus_a,
 	output wire	sio_vreg_en_refgen,
 	output wire	sio_ibuf_sel_refgen,
-	output wire	sio_vohref,
+	inout wire	sio_vohref,
 	output wire	sio_hld_h_n_refgen,
 	output wire	sio_vtrip_sel_refgen,
-	output wire	[1:0]	sio_pad_a_esd_0_h,
-	output wire	[1:0]	sio_pad_a_noesd_h,
+	inout wire	[1:0]	sio_pad_a_esd_0_h,
+	inout wire	[1:0]	sio_pad_a_noesd_h,
 	output wire	[1:0]	sio_inp_dis,
 	input wire	[1:0]	sio_tie_lo_esd,
 	output wire	[1:0]	sio_out,
@@ -2236,24 +2236,48 @@ module panamax_fpga_top (
     );
     
     `ifdef USE_POWER_PINS
-    wire adc0_vref;
-    wire adc1_vref;
+    wire adc0_vref, adc0_vref_buf;
+    wire adc1_vref, adc1_vref_buf;
     `endif
     
     (* keep *) res_div res_div0 (
-    `ifdef USE_POWER_PINS
+    /*`ifdef USE_POWER_PINS
         .vdda  (AVPWR),
         .vssa  (AVGND),
+        .vsub  (DVGND),
         .vref  (adc0_vref)
-    `endif
+    `endif*/
     );
     
     (* keep *) res_div res_div1 (
-    `ifdef USE_POWER_PINS
+    /*`ifdef USE_POWER_PINS
         .vdda  (AVPWR),
         .vssa  (AVGND),
+        .vsub  (DVGND),
         .vref  (adc1_vref)
-    `endif
+    `endif*/
+    );
+    
+    (* keep *) follower_amp follower_amp0 (
+    /*`ifdef USE_POWER_PINS
+        .vdd  (AVPWR),
+        .vss  (AVGND),
+        .vsub (DVGND),
+        .in   (adc0_vref),
+        .out  (adc0_vref_buf),
+    `endif*/
+        .ena  (1'b1)
+    );
+    
+    (* keep *) follower_amp follower_amp1 (
+    /*`ifdef USE_POWER_PINS
+        .vdd  (AVPWR),
+        .vss  (AVGND),
+        .vsub (DVGND),
+        .in   (adc1_vref),
+        .out  (adc1_vref_buf),
+    `endif*/
+        .ena  (1'b1)
     );
     
     (* keep *) sky130_ef_ip__adc3v_12bit adc0 (
@@ -2264,7 +2288,7 @@ module panamax_fpga_top (
         .vssa0  (AVGND),
        
         .adc_trim   (AVGND),
-        .adc_vCM    (adc0_vref),
+        .adc_vCM    (adc0_vref_buf),
         .adc_vrefL  (AVGND),
         .adc_vrefH  (AVPWR),
         .adc_in     (xi0_core),
@@ -2285,7 +2309,7 @@ module panamax_fpga_top (
         .vssa0  (AVGND),
        
         .adc_trim   (AVGND),
-        .adc_vCM    (adc1_vref),
+        .adc_vCM    (adc1_vref_buf),
         .adc_vrefL  (AVGND),
         .adc_vrefH  (AVPWR),
         .adc_in     (xo0_core),
@@ -2375,33 +2399,33 @@ module panamax_fpga_top (
     assign muxsplit_sw_hld_vdda_h_n = gpio7_7_tie_hi_esd; // nearest tie hi esd
 
     // Can be used to route analog signals in the padring
-    assign muxsplit_ne_switch_aa_sl = 1'b0;
-    assign muxsplit_ne_switch_aa_s0 = 1'b0;
-    assign muxsplit_ne_switch_bb_s0 = 1'b0;
-    assign muxsplit_ne_switch_bb_sl = 1'b0;
-    assign muxsplit_ne_switch_bb_sr = 1'b0;
-    assign muxsplit_ne_switch_aa_sr = 1'b0;
+    assign muxsplit_ne_switch_aa_sl = gpio2_7_zero;
+    assign muxsplit_ne_switch_aa_s0 = gpio2_7_zero;
+    assign muxsplit_ne_switch_bb_s0 = gpio2_7_zero;
+    assign muxsplit_ne_switch_bb_sl = gpio2_7_zero;
+    assign muxsplit_ne_switch_bb_sr = gpio2_7_zero;
+    assign muxsplit_ne_switch_aa_sr = gpio2_7_zero;
 
-    assign muxsplit_nw_switch_aa_sl = 1'b0;
-    assign muxsplit_nw_switch_aa_s0 = 1'b0;
-    assign muxsplit_nw_switch_bb_s0 = 1'b0;
-    assign muxsplit_nw_switch_bb_sl = 1'b0;
-    assign muxsplit_nw_switch_bb_sr = 1'b0;
-    assign muxsplit_nw_switch_aa_sr = 1'b0;
+    assign muxsplit_nw_switch_aa_sl = gpio5_0_zero;
+    assign muxsplit_nw_switch_aa_s0 = gpio5_0_zero;
+    assign muxsplit_nw_switch_bb_s0 = gpio5_0_zero;
+    assign muxsplit_nw_switch_bb_sl = gpio5_0_zero;
+    assign muxsplit_nw_switch_bb_sr = gpio5_0_zero;
+    assign muxsplit_nw_switch_aa_sr = gpio5_0_zero;
 
-    assign muxsplit_se_switch_aa_sl = 1'b0;
-    assign muxsplit_se_switch_aa_s0 = 1'b0;
-    assign muxsplit_se_switch_bb_s0 = 1'b0;
-    assign muxsplit_se_switch_bb_sl = 1'b0;
-    assign muxsplit_se_switch_bb_sr = 1'b0;
-    assign muxsplit_se_switch_aa_sr = 1'b0;
+    assign muxsplit_se_switch_aa_sl = gpio0_0_zero;
+    assign muxsplit_se_switch_aa_s0 = gpio0_0_zero;
+    assign muxsplit_se_switch_bb_s0 = gpio0_0_zero;
+    assign muxsplit_se_switch_bb_sl = gpio0_0_zero;
+    assign muxsplit_se_switch_bb_sr = gpio0_0_zero;
+    assign muxsplit_se_switch_aa_sr = gpio0_0_zero;
 
-    assign muxsplit_sw_switch_aa_sl = 1'b0;
-    assign muxsplit_sw_switch_aa_s0 = 1'b0;
-    assign muxsplit_sw_switch_bb_s0 = 1'b0;
-    assign muxsplit_sw_switch_bb_sl = 1'b0;
-    assign muxsplit_sw_switch_bb_sr = 1'b0;
-    assign muxsplit_sw_switch_aa_sr = 1'b0;
+    assign muxsplit_sw_switch_aa_sl = gpio7_7_zero;
+    assign muxsplit_sw_switch_aa_s0 = gpio7_7_zero;
+    assign muxsplit_sw_switch_bb_s0 = gpio7_7_zero;
+    assign muxsplit_sw_switch_bb_sl = gpio7_7_zero;
+    assign muxsplit_sw_switch_bb_sr = gpio7_7_zero;
+    assign muxsplit_sw_switch_aa_sr = gpio7_7_zero;
 
     // vrefs
     assign vref_e_enable_h = porb_h;
@@ -2410,11 +2434,11 @@ module panamax_fpga_top (
     assign vref_w_hld_h_n = gpio6_4_tie_hi_esd; // nearest tie hi esd
 
     // Doesn't matter, we don't use vrefs
-    assign vref_e_ref_sel = 5'b01111;
-    assign vref_e_vrefgen_en = 1'b1;
+    assign vref_e_ref_sel = {gpio6_4_zero, gpio6_4_zero, gpio6_4_zero, gpio6_4_zero, gpio6_4_zero};
+    assign vref_e_vrefgen_en = gpio6_4_zero;
 
-    assign vref_w_ref_sel = 5'b01111;
-    assign vref_w_vrefgen_en = 1'b1;
+    assign vref_w_ref_sel = {gpio1_4_zero, gpio1_4_zero, gpio1_4_zero, gpio1_4_zero, gpio1_4_zero};
+    assign vref_w_vrefgen_en = gpio1_4_zero;
     
     // analog vref_e_vinref
     // analog vref_w_vinref
@@ -2440,13 +2464,13 @@ module panamax_fpga_top (
     assign select_oe_n              = select_zero;
     
     // Power detector is not used
-    assign pwrdet_in1_vddio_hv = 1'b0;
-    assign pwrdet_in2_vddd_hv = 1'b0;
-    assign pwrdet_in1_vddd_hv = 1'b0;
-    assign pwrdet_in3_vddd_hv = 1'b0;
-    assign pwrdet_in2_vddio_hv = 1'b0;
-    assign pwrdet_in3_vddio_hv = 1'b0;
-    assign pwrdet_rst_por_hv_n = 1'b0;
+    assign pwrdet_in1_vddio_hv = gpio8_7_zero;
+    assign pwrdet_in2_vddd_hv = gpio8_7_zero;
+    assign pwrdet_in1_vddd_hv = gpio8_7_zero;
+    assign pwrdet_in3_vddd_hv = gpio8_7_zero;
+    assign pwrdet_in2_vddio_hv = gpio8_7_zero;
+    assign pwrdet_in3_vddio_hv = gpio8_7_zero;
+    assign pwrdet_rst_por_hv_n = gpio8_7_zero;
     
     (* keep *) manual_routing manual_routing (
     /*`ifdef USE_POWER_PINS

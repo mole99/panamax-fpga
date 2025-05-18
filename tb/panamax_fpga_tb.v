@@ -191,9 +191,9 @@ module panamax_fpga_tb;
     assign fpga_mosi = gpio67;
     assign gpio68 = fpga_miso;
     `else
-    assign fpga_cs_n = 1'b1;
-    assign fpga_sclk = 1'b0;
-    assign fpga_mosi = 1'b0;
+    assign gpio65 = fpga_sclk;
+    assign gpio66 = fpga_cs_n;
+    assign gpio67 = fpga_mosi;
     assign fpga_miso = gpio68;
     `endif
     
