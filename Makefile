@@ -40,9 +40,19 @@ copy-macro:
 	gzip --force macro/odb/${TOP_CORE}.odb
 .PHONY: copy-macro
 
-lvs:
+edit-pnl:
+	mkdir -p macro/pnl_edit/
+	cd scripts; python3 edit_pnl.py
+.PHONY: edit-pnl
+
+edit-spice:
+	mkdir -p macro/spice_edit/
+	cp macro/spice/${TOP_CORE}.spice macro/spice_edit/${TOP_CORE}.spice
+.PHONY: edit-spicepnl
+
+lvs-edit:
 	@echo "\
-	set circuit1 [readnet spice macro/spice/${TOP_CORE}.spice]\n\
+	set circuit1 [readnet spice macro/spice_edit/${TOP_CORE}.spice]\n\
 	set circuit2 [readnet verilog /dev/null]\n\
 	readnet spice [file normalize $(PDK_ROOT)/$(PDK)/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice] \$$circuit2\n\
 	readnet verilog macro/pnl_edit/${TOP_CORE}.pnl.v \$$circuit2\n\
@@ -50,9 +60,27 @@ lvs:
 	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/sky130A_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
 	
 	netgen -batch source lvs_script.tcl
+.PHONY: lvs-edit
+
+lvs:
+	@echo "\
+	set circuit1 [readnet spice macro/spice/${TOP_CORE}.spice]\n\
+	set circuit2 [readnet verilog /dev/null]\n\
+	readnet spice [file normalize $(PDK_ROOT)/$(PDK)/libs.ref/sky130_fd_sc_hd/spice/sky130_fd_sc_hd.spice] \$$circuit2\n\
+	readnet verilog macro/pnl/${TOP_CORE}.pnl.v \$$circuit2\n\
+	ignore class manual_routing\n\
+	ignore class res_div\n\
+	ignore class follower_amp\n\
+	ignore class sky130_ef_ip__adc3v_12bit\n\
+	ignore class sky130_ef_ip__rdac3v_8bit\n\
+	ignore class sky130_ef_ip__simple_por4x\n\
+	lvs \"\$$circuit1 ${TOP_CORE}\" \"\$$circuit2 ${TOP_CORE}\" $(PDK_ROOT)/$(PDK)/libs.tech/netgen/sky130A_setup.tcl netgen_lvs.rpt -blackbox" > lvs_script.tcl
+	
+	netgen -batch source lvs_script.tcl
 .PHONY: lvs
 
 merge:
+	mkdir -p final/gds/
 	cd scripts; python3 generate_panamax_fpga.py
 .PHONY: merge
 
@@ -67,7 +95,7 @@ drc:
 .PHONY: drc
 
 fill:
-	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/generate_fill.py final/gds/${TOP}.gds.gz -dist
+	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) python3 $(PDK_ROOT)/$(PDK)/libs.tech/magic/generate_fill.py final/gds/${TOP}.gds.gz -dist
 	
 	# Move the fill pattern, it's saved under gds/ because of how generate_fill works...
 	mkdir -p final/gds_fill/
@@ -75,12 +103,17 @@ fill:
 	
 	# Merge layout with fill
 	python3 scripts/merge_fill.py final/gds/${TOP}.gds.gz final/gds_fill/${TOP}_fill_pattern.gds.gz final/gds_fill/${TOP}.gds.gz
-
-	# Run density check
-	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) $(PDK_ROOT)/$(PDK)/libs.tech/magic/check_density.py final/gds_fill/${TOP}.gds.gz
 .PHONY: fill
+
+density:
+	# Run density check
+	PDK_ROOT=$(PDK_ROOT) PDK=$(PDK) python3 $(PDK_ROOT)/$(PDK)/libs.tech/magic/check_density.py final/gds_fill/${TOP}.gds.gz
+.PHONY: density
 
 drc-fill:
 	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/drc/sky130A_mr.drc -rd input=final/gds_fill/${TOP}.gds.gz -rd top_cell=${TOP} -rd report=panamax_fpga.lyrdb -rd thr=$(shell nproc) -rd feol=true -rd beol=true -rd offgrid=true
 .PHONY: drc-fill
 
+sealring:
+	cd scripts; python3 add_sealring.py
+.PHONY: sealring

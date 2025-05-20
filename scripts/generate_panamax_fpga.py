@@ -4,11 +4,10 @@ ly_new = pya.Layout()
 top = ly_new.create_cell("panamax_fpga")
 
 cells = [
-    {'layout': "../macro/gds/panamax_fpga_top.gds.gz",                          'offset': (6+208.85, 6+208.5)},                 # Core
-    {'layout': "../ip/panamax/gds/panamax.gds.gz",                              'offset': (6+0, 6+0)},                          # Padring
-    {'layout': "../ip/logo/gds/logo.gds.gz",                                    'offset': (6+208.85+2665+5, 6+208.5+120+5)},    # Logo
-    {'layout': "../ip/panamax_core_pins/gds/panamax_core_connections.gds.gz",   'offset': (6+208.85, 6+208.5)},                 # Connections
-    {'layout': "../ip/sealring/gds/advSeal_6um_gen.gds.gz",                     'offset': (0, 0)},                              # Sealring
+    {'layout': "../macro/gds/panamax_fpga_top.gds.gz",                          'offset': (208.85, 208.5)},                 # Core
+    {'layout': "../ip/panamax/gds/panamax.gds.gz",                              'offset': (0, 0)},                          # Padring
+    {'layout': "../ip/logo/gds/logo.gds.gz",                                    'offset': (208.85+2665+5, 208.5+120+5)},    # Logo
+    {'layout': "../ip/panamax_core_pins/gds/panamax_core_connections.gds.gz",   'offset': (208.85, 208.5)},                 # Connections
 ]
 
 for cell in cells:

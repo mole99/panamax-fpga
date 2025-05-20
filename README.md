@@ -15,10 +15,10 @@ A FABulous FPGA utilizing the Panamax padframe designed using open source EDA to
     * Open-drain
     * Slow / fast slew
 - 1280 LCs (LUT4 + FF)
-- 8 MAC
-- 16 Register files (32x4 1w2r)
+- 8 MAC (8-bit * 8-bit + 20-bit)
+- 16 Register files (1w2r, 32x4)
 - 8 BRAM (dual-ported 1r1rw, 256x32)
-- 2 x 12-bit split CDAC SAR-ADC
+- 2 x 12-bit split-CDAC SAR ADC
 - 2 x 8-bit R-DAC
 
 ## FPGA Fabric
@@ -41,10 +41,13 @@ make pnr
 
 ```
 make copy-macro
+make edit-pnl
 make lvs
 make merge
 make create-image
 make drc
 make fill
+make density
 make drc-fill
+make sealring
 ```
