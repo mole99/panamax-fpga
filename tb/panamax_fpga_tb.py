@@ -29,6 +29,13 @@ fpga_all_zeros = {
     'flash1_slot1' : '',
 }
 
+fpga_counter_warmboot = {
+    'mode': 'peripheral',
+    'peripheral_bitstream' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/counter_warmboot/counter_warmboot.bit',
+    'flash1_slot0' : '',
+    'flash1_slot1' : '',
+}
+
 fpga_adc_dac = {
     'mode': 'controller',
     'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/adc_dac/adc_dac.hex',
@@ -37,11 +44,11 @@ fpga_adc_dac = {
 
 fpga_toggle = {
     'mode': 'controller',
-    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_ones/all_ones.hex',
-    'flash1_slot1' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/all_zeros/all_zeros.hex',
+    'flash1_slot0' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/trigger_slot1/trigger_slot1.hex',
+    'flash1_slot1' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/trigger_slot0/trigger_slot0.hex',
 }
 
-enabled = fpga_adc_dac
+enabled = fpga_counter_warmboot
 
 async def start_clock(clock, freq=50):
     """ Start the clock @ freq MHz """
@@ -151,6 +158,13 @@ async def test_fpga_controller(dut):
     
     if enabled == fpga_adc_dac:
         await ClockCycles(dut.clock_tb, 200)
+    
+    if enabled == fpga_toggle:
+        assert (dut.fpga_gpio.value == 0)
+        await FallingEdge(dut.config_busy_o)
+        assert (dut.fpga_gpio.value == (1<<64)-1)
+        await FallingEdge(dut.config_busy_o)
+        assert (dut.fpga_gpio.value == 0)
 
 @cocotb.test(skip=not enabled['mode'] == 'peripheral')
 async def test_fpga_peripheral(dut):
@@ -195,9 +209,9 @@ async def test_fpga_peripheral(dut):
     if enabled == fpga_all_ones:
         assert (dut.fpga_gpio.value == (1<<64)-1)
     
-    if enabled == fpga_counter:
+    if enabled == fpga_counter_warmboot:
         await ClockCycles(dut.clock_tb, MAX_CNT)
-        assert(get_fabric_io(dut) == MAX_CNT-1)
+        assert(dut.fpga_gpio.value == MAX_CNT-1)
 
 if __name__ == "__main__":
 
@@ -233,6 +247,7 @@ if __name__ == "__main__":
         testbench_path / '../ip/sky130_ef_ip__adc3v_12bit/verilog/sky130_ef_ip__adc3v_12bit.v',
         testbench_path / '../ip/res_div/gl/res_div.v',
         testbench_path / '../ip/manual_routing/gl/manual_routing.v',
+        testbench_path / '../ip/follower_amp/verilog/follower_amp.v',
         
         # Add I/O models
         Path(pdk_root).expanduser() / pdk / "libs.ref" / "sky130_fd_io" / "verilog" / "sky130_fd_io.v",
