@@ -48,7 +48,7 @@ fpga_toggle = {
     'flash1_slot1' : '../../ip/fabulous_fabric/fabric_sky130/user_designs/trigger_slot0/trigger_slot0.hex',
 }
 
-enabled = fpga_counter_warmboot
+enabled = fpga_toggle
 
 async def start_clock(clock, freq=50):
     """ Start the clock @ freq MHz """
